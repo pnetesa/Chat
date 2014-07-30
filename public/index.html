@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html ng-app="chat">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Template</title>
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <script src="libs/angular.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/register.js"></script>
+    <script src="js/lobby.js"></script>
+    <script src="js/room.js"></script>
+    <script src="js/services.js"></script>
+
+    <style>
+        [touch-action="none"] {
+            -ms-touch-action: none;
+            touch-action: none;
+        }
+
+        [touch-action="pan-x"] {
+            -ms-touch-action: pan-x;
+            touch-action: pan-x;
+        }
+
+        [touch-action="pan-y"] {
+            -ms-touch-action: pan-y;
+            touch-action: pan-y;
+        }
+
+        [touch-action="scroll"], [touch-action="pan-x pan-y"], [touch-action="pan-y pan-x"] {
+            -ms-touch-action: pan-x pan-y;
+            touch-action: pan-x pan-y;
+        }
+    </style>
+
+</head>
+<body ng-controller="AppController">
+    Index...<br />
+    <a href ng-click="showPage('login')">login</a><br />
+    <a href ng-click="showPage('register')">register</a><br />
+    <a href ng-click="showPage('lobby')">lobby</a><br />
+    <a href ng-click="showPage('room')">room</a><br />
+
+    <login></login>
+
+    <register></register>
+
+    <lobby></lobby>
+
+    <room></room>
+
+</body>
+</html>
