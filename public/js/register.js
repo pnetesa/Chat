@@ -8,21 +8,16 @@
 
         $scope.register = function () {
 
-            var data = { email: $scope.userInfo.email, password: $scope.userInfo.password };
-
-            //$http.get('/register.json', { data: data }).success(function (data) {
-            //    alert('Success: ' + data);
-            //    CommonService.showPage('lobby');
-            //});
-
-            $http({
-                method: 'GET',
-                url: '/register.json',
+            var config = {
                 params: {
-                    test: 'test'
-                },
-                data: data
-            }).success(function (data) {
+                    userInfo: {
+                        email: $scope.userInfo.email,
+                        password: $scope.userInfo.password
+                    }
+                }
+            };
+
+            $http.get('/register.json', config).success(function (data) {
                 alert('Success: ' + data);
                 CommonService.showPage('lobby');
             });
