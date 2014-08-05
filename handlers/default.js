@@ -17,7 +17,4 @@ function getFilePath (req) {
     return __dirname + '../../public' + (req.url === '/' ? '/index.html' : req.url);
 };
 
-exports.default = handleDefault;
-exports.map = {
-    '/register.json': require('./register').handleRegister
-};
+exports.handleDefault = handleDefault;

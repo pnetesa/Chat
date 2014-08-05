@@ -22,4 +22,39 @@ function getContentType(req) {
     return contentTypes[extension];
 };
 
+
+function hashCode(text) {
+
+    if (!text) {
+        return 0;
+    }
+
+    var hash = 0;
+    var char;
+
+    for (var i = 0; i < text.length; i++) {
+        char = text.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash |= 0;
+    }
+
+    return hash;
+}
+
+function jsonResponse(res, statusCode, arg) {
+
+    var result = arg && (typeof (arg) === 'string') ? { message: arg }
+                                                    : arg ? arg : {};
+
+    res.writeHead(statusCode, { 'Content-Type': getContentType('json') });
+    res.end(JSON.stringify(result));
+}
+
+function token() {
+    return Math.random().toString(36).substr(2);
+}
+
 exports.getContentType = getContentType;
+exports.hashCode = hashCode;
+exports.jsonResponse = jsonResponse;
+exports.token = token;

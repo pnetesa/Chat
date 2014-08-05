@@ -15,6 +15,11 @@
             CommonService.showPage(pageName);
         };
 
+        $scope.logout = function () {
+            CommonService.clearToken();
+            $scope.showPage('login');
+        };
+
     }]);
 
     var createDirective = function (name, file) {

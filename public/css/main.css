@@ -42,3 +42,15 @@ body {
   display: block;
   font-size: 1.2em;
 }
+
+.toast {
+	width: 330px;
+	border: 1px solid #c6c7c7;
+	background: #ffffff;
+	color: #000000;
+	text-align: center;
+	font-size: 15px;
+	position: absolute;
+	word-break: keep-all;
+	word-wrap: break-word;
+}

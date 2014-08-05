@@ -1,14 +1,14 @@
-﻿<div ng-controller="LoginController" ng-show="isVisible()" ng-cloak>
-    <form class="block-panel">
+﻿<div ng-controller="LoginController" ng-show="isVisible()" ng-init="autoLogin()" ng-cloak>
+    <form name="loginForm" ng-submit="loginForm.$valid && login()" class="block-panel">
         <h2 class="block-panel-heading">Sign in</h2>
-        <input type="text" class="form-control credentials" placeholder="Email address" required="" autofocus="">
-        <input type="password" class="form-control credentials" placeholder="Password" required="">
-        <label class="checkbox">
+        <input type="text" ng-model="loginInfo.email" class="form-control credentials" placeholder="Email address" autofocus="" required>
+        <input type="password" ng-model="loginInfo.password" class="form-control credentials" placeholder="Password" required>
+        <label class="checkbox" ng-model="loginInfo.rememberMe">
             <input type="checkbox" value="remember-me"> Remember me
         </label>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
     </form>
     <form class="block-panel">
-        <button id="btn-register" ng-click="showRegisterPage()" class="btn btn-lg btn-block" type="submit">Register</button>
+        <button id="btn-register" ng-click="showPage('register')" class="btn btn-lg btn-block" type="submit">Register</button>
     </form>
 </div>
