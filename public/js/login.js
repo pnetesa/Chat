@@ -12,7 +12,30 @@
             } : {};
 
         $scope.autoLogin = function () {
-            alert('autoLogin()');
+
+            var token = CommonService.getToken();
+
+            if (!token) {
+                return;
+            }
+
+            var config = {
+                params: {
+                    tokenInfo: token
+                }
+            };
+
+            $http.get('/autologin.json', config)
+                .success(function (data) {
+                    console.log(data.message);
+                    CommonService.showPage('lobby');
+                })
+                .error(function (data, status) {
+                    CommonService.showToast(data.message);
+                    console.log(status + " " + data.message);
+                });
+
+
         };
 
         $scope.login = function () {

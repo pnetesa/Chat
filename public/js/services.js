@@ -23,6 +23,10 @@
 
         service.showToast = function (text) {
 
+            if (!text) {
+                return;
+            }
+
             if (!$toast) {
                 $toast = $('.toast');
             }
