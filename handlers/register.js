@@ -1,41 +1,30 @@
 ﻿var common = require('./common.js');
-var querystring = require('querystring');
-var redis = require('redis');
-var redisClient = redis.createClient();
-var consts = require('./consts.js');
+var accountData = require('../data/account.js');
 
 function handleRegister(reqUrl, req, res) {
 
-    var queryObj = querystring.parse(reqUrl.query);
-    var userInfo = JSON.parse(queryObj.userInfo);
+    var userInfo = common.getUrlArg(reqUrl, 'userInfo');
 
-    registerUser(res, userInfo.email, common.hashCode(userInfo.password));
-};
-
-function registerUser(res, email, passHash) {
-
-    redisClient.hexists(consts.ACCOUNT, email, function (err, result) {
+    accountData.isExists(userInfo.email, function (err, result) {
 
         var accountExists = result > 0;
 
         if (accountExists) {
-            reject(res, email);
+            reject(res, userInfo.email);
         } else {
-            register(res, email, passHash);
+            register(res, userInfo.email, userInfo.password);
         }
     });
-}
+};
 
-function reject(res, email) {
-    common.jsonResponse(res, 401, 'User \'' + email + '\' already registered. Try another email.');
-    //clear();
-}
+function register(res, email, password) {
 
-function register(res, email, passHash) {
+    var account = {
+        passHash: common.hashCode(password),
+        token: common.token()
+    };
 
-    var account = { passHash: passHash, token: common.token() };
-
-    redisClient.hset(consts.ACCOUNT, email, JSON.stringify(account), function (err, result) {
+    accountData.save(email, account, function (err, result) {
         if (result === 1) {
             common.jsonResponse(res, 200, {
                 message: 'Registered user \'' + email + '\'.',
@@ -48,8 +37,9 @@ function register(res, email, passHash) {
     });
 }
 
-function clear() {
-    redisClient.del(consts.ACCOUNT);
+function reject(res, email) {
+    common.jsonResponse(res, 401, 'User \'' + email + '\' already registered. Try another email.');
+    //accountData.clear();
 }
 
 exports.handleRegister = handleRegister;

@@ -1,59 +1,16 @@
 ﻿var common = require('./common.js');
-var querystring = require('querystring');
-var redis = require('redis');
-var redisClient = redis.createClient();
-var consts = require('./consts.js');
-
-function handleAutologin(reqUrl, req, res) {
-
-    var queryObj = querystring.parse(reqUrl.query);
-    var tokenInfo = JSON.parse(queryObj.tokenInfo);
-
-    autologinUser(res, tokenInfo.email, tokenInfo.token);
-};
-
-function autologinUser(res, email, token) {
-
-    redisClient.hget(consts.ACCOUNT, email, function (err, data) {
-
-        if (!data) {
-            reject(res, email);
-        } else {
-            autologin(res, email, token, data);
-        }
-    });
-}
-
-function autologin(res, email, token, data) {
-
-    var account = JSON.parse(data);
-
-    if (account.token === token) {
-        common.jsonResponse(res, 200, 'Authorized user \'' + email + '\'.');
-    } else {
-        common.jsonResponse(res, 401, 'Invalid token');
-    }
-}
+var accountData = require('../data/account.js');
 
 function handleLogin(reqUrl, req, res) {
-
-    var queryObj = querystring.parse(reqUrl.query);
-    var loginInfo = JSON.parse(queryObj.loginInfo);
-
-    loginUser(res, loginInfo.email, loginInfo.password);
-};
-
-function loginUser(res, email, password) {
-
-    redisClient.hget(consts.ACCOUNT, email, function (err, data) {
-
+    var loginInfo = common.getUrlArg(reqUrl, 'loginInfo');
+    accountData.get(loginInfo.email, function (err, data) {
         if (!data) {
-            reject(res, email);
+            reject(res, loginInfo.email);
         } else {
-            login(res, email, password, data);
+            login(res, loginInfo.email, loginInfo.password, data);
         }
     });
-}
+};
 
 function login(res, email, password, data) {
 
@@ -63,7 +20,7 @@ function login(res, email, password, data) {
     if (account.passHash === passHash) {
 
         account.token = common.token();
-        redisClient.hset(consts.ACCOUNT, email, JSON.stringify(account), function (err, result) {
+        accountData.save(email, account, function (err, result) {
             common.jsonResponse(res, 200, {
                 message: 'Authorized user \'' + email + '\'.',
                 email: email,
@@ -76,9 +33,56 @@ function login(res, email, password, data) {
     }
 }
 
+function handleAutologin(reqUrl, req, res) {
+    var tokenInfo = common.getUrlArg(reqUrl, 'tokenInfo');
+    accountData.get(tokenInfo.email, function (err, data) {
+
+        if (!data) {
+            reject(res, tokenInfo.email);
+        } else {
+            autologin(res, tokenInfo.email, tokenInfo.token, data);
+        }
+    });
+};
+
+function autologin(res, email, token, data) {
+
+    var account = JSON.parse(data);
+
+    if (account.token === token) {
+        common.jsonResponse(res, 200, 'Authorized user \'' + email + '\'.');
+    } else {
+        common.jsonResponse(res, 401, 'Invalid token');
+    }
+}
+
 function reject(res, email) {
     common.jsonResponse(res, 403, 'Invalid email \'' + email + '\'.');
 }
 
-exports.handleAutologin = handleAutologin;
+function handleLogout(reqUrl, req, res) {
+    var tokenInfo = common.getUrlArg(reqUrl, 'tokenInfo');
+    accountData.get(tokenInfo.email, function (err, data) {
+        if (!data) {
+            reject(res, tokenInfo.email);
+        } else {
+            logout(res, tokenInfo.email, tokenInfo.token, data);
+        }
+    });
+};
+
+function logout(res, email, token, data) {
+    var account = JSON.parse(data);
+    if (account.token === token) {
+        account.token = '';
+        accountData.save(email, account, function (err, result) {
+            common.jsonResponse(res, 200, 'User \'' + email + '\' logged out');
+        });
+    } else {
+        common.jsonResponse(res, 401, 'Invalid token');
+    }
+}
+
 exports.handleLogin = handleLogin;
+exports.handleAutologin = handleAutologin;
+exports.handleLogout = handleLogout;

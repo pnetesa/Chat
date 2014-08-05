@@ -30,6 +30,7 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="data\account.js" />
     <Compile Include="handlers\common.js" />
     <Compile Include="handlers\consts.js" />
     <Compile Include="handlers\login.js" />
@@ -57,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="handlers\" />
+    <Folder Include="data\" />
     <Folder Include="public\" />
     <Folder Include="public\css\" />
     <Folder Include="public\js\" />

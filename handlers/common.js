@@ -1,4 +1,6 @@
-﻿var contentTypes = {
+﻿var querystring = require('querystring');
+
+var contentTypes = {
     'html': 'text/html',
     'css': 'text/css',
     'ico': 'image/x-icon',
@@ -54,7 +56,13 @@ function token() {
     return Math.random().toString(36).substr(2);
 }
 
+function getUrlArg(reqUrl, name) {
+    var queryObj = querystring.parse(reqUrl.query);
+    return JSON.parse(queryObj[name]);
+}
+
 exports.getContentType = getContentType;
 exports.hashCode = hashCode;
 exports.jsonResponse = jsonResponse;
 exports.token = token;
+exports.getUrlArg = getUrlArg;

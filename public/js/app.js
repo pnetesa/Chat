@@ -9,15 +9,30 @@
             'chat-services'
         ]);
 
-    app.controller('AppController', ['$scope', 'CommonService', function ($scope, CommonService) {
+    app.controller('AppController', ['$scope', '$http', 'CommonService', function ($scope, $http, CommonService) {
 
         $scope.showPage = function (pageName) {
             CommonService.showPage(pageName);
         };
 
         $scope.logout = function () {
-            CommonService.clearToken();
-            $scope.showPage('login');
+
+            var config = {
+                params: {
+                    tokenInfo: CommonService.getToken()
+                }
+            };
+
+            $http.get('/logout.json', config)
+                .success(function (data) {
+                    console.log(data.message);
+                    CommonService.clearToken();
+                    $scope.showPage('login');
+                })
+                .error(function (data, status) {
+                    CommonService.showToast(data.message);
+                    console.log(status + " " + data.message);
+                });
         };
 
     }]);

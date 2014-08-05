@@ -34,8 +34,6 @@
                     CommonService.showToast(data.message);
                     console.log(status + " " + data.message);
                 });
-
-
         };
 
         $scope.login = function () {
