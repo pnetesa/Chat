@@ -1,10 +1,10 @@
 ﻿(function () {
 
-    var app = angular.module('chat-login', ['chat-services']);
+    var app = angular.module('login', ['utils']);
 
-    app.controller('LoginController', ['$scope', '$http', 'CommonService', function ($scope, $http, CommonService) {
+    app.controller('LoginController', ['$scope', '$http', 'Utils', function ($scope, $http, Utils) {
 
-        $scope.loginInfo = CommonService.isDev ?
+        $scope.loginInfo = Utils.isDev ?
             {
                 email: 'user@email.com',
                 password: 'pass123',
@@ -13,7 +13,7 @@
 
         $scope.autoLogin = function () {
 
-            var token = CommonService.getToken();
+            var token = Utils.getToken();
 
             if (!token) {
                 return;
@@ -28,10 +28,10 @@
             $http.get('/autologin.json', config)
                 .success(function (data) {
                     console.log(data.message);
-                    CommonService.showPage('lobby');
+                    Utils.showPage('lobby');
                 })
                 .error(function (data, status) {
-                    CommonService.showToast(data.message);
+                    Utils.showToast(data.message);
                     console.log(status + " " + data.message);
                 });
         };
@@ -47,17 +47,17 @@
             $http.get('/login.json', config)
                 .success(function (data) {
                     console.log(data.message);
-                    CommonService.setToken(data.email, data.token, $scope.loginInfo.rememberMe);
-                    CommonService.showPage('lobby');
+                    Utils.setToken(data.email, data.token, $scope.loginInfo.rememberMe);
+                    Utils.showPage('lobby');
                 })
                 .error(function (data, status) {
-                    CommonService.showToast(data.message);
+                    Utils.showToast(data.message);
                     console.log(status + " " + data.message);
                 });
         };
 
         $scope.isVisible = function () {
-            return CommonService.isLogin;
+            return Utils.isLogin;
         };
 
     }]);

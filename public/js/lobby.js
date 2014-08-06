@@ -1,15 +1,15 @@
 ﻿(function () {
 
-    var app = angular.module('chat-lobby', ['chat-services']);
+    var app = angular.module('lobby', ['utils']);
 
-    app.controller('LobbyController', ['$scope', 'CommonService', function ($scope, CommonService) {
+    app.controller('LobbyController', ['$scope', 'Utils', function ($scope, Utils) {
 
         $scope.isVisible = function () {
-            return CommonService.isLobby;
+            return Utils.isLobby;
         };
 
         $scope.onRoomClick = function () {
-            CommonService.showPage('room');
+            Utils.showPage('room');
         };
 
     }]);

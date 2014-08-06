@@ -2,35 +2,35 @@
 
     var app = angular.module('chat',
         [
-            'chat-login',
-            'chat-register',
-            'chat-lobby',
-            'chat-room',
-            'chat-services'
+            'login',
+            'register',
+            'lobby',
+            'room',
+            'utils'
         ]);
 
-    app.controller('AppController', ['$scope', '$http', 'CommonService', function ($scope, $http, CommonService) {
+    app.controller('AppController', ['$scope', '$http', 'Utils', function ($scope, $http, Utils) {
 
         $scope.showPage = function (pageName) {
-            CommonService.showPage(pageName);
+            Utils.showPage(pageName);
         };
 
         $scope.logout = function () {
 
             var config = {
                 params: {
-                    tokenInfo: CommonService.getToken()
+                    tokenInfo: Utils.getToken()
                 }
             };
 
             $http.get('/logout.json', config)
                 .success(function (data) {
                     console.log(data.message);
-                    CommonService.clearToken();
+                    Utils.clearToken();
                     $scope.showPage('login');
                 })
                 .error(function (data, status) {
-                    CommonService.showToast(data.message);
+                    Utils.showToast(data.message);
                     console.log(status + " " + data.message);
                 });
         };

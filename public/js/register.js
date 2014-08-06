@@ -1,10 +1,10 @@
 ﻿(function () {
 
-    var app = angular.module('chat-register', ['chat-services']);
+    var app = angular.module('register', ['utils']);
 
-    app.controller('RegisterController', ['$scope', '$http', 'CommonService', function ($scope, $http, CommonService) {
+    app.controller('RegisterController', ['$scope', '$http', 'Utils', function ($scope, $http, Utils) {
 
-        $scope.userInfo = CommonService.isDev ?
+        $scope.userInfo = Utils.isDev ?
             {
                 email: 'user@email.com',
                 password: 'pass123'
@@ -21,17 +21,17 @@
             $http.get('/register.json', config)
                 .success(function (data) {
                     console.log(data.message);
-                    CommonService.setToken(data.email, data.token);
-                    CommonService.showPage('lobby');
+                    Utils.setToken(data.email, data.token);
+                    Utils.showPage('lobby');
                 })
                 .error(function (data, status) {
-                    CommonService.showToast(data.message);
+                    Utils.showToast(data.message);
                     console.log(status + " " + data.message);
                 });
         };
 
         $scope.isVisible = function () {
-            return CommonService.isRegister;
+            return Utils.isRegister;
         };
 
     }]);

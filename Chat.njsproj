@@ -30,9 +30,9 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="data\room.js" />
     <Compile Include="data\account.js" />
     <Compile Include="handlers\common.js" />
-    <Compile Include="handlers\consts.js" />
     <Compile Include="handlers\login.js" />
     <Compile Include="handlers\register.js" />
     <Compile Include="handlers\routing.js" />
@@ -41,7 +41,7 @@
     <Compile Include="public\js\lobby.js" />
     <Compile Include="public\js\register.js" />
     <Compile Include="public\js\login.js" />
-    <Compile Include="public\js\services.js" />
+    <Compile Include="public\js\utils.js" />
     <Compile Include="public\libs\angular.min.js" />
     <Compile Include="public\libs\bootstrap.min.js" />
     <Compile Include="handlers\default.js" />

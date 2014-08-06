@@ -1,11 +1,11 @@
 ﻿(function () {
 
-    var app = angular.module('chat-room', ['chat-services']);
+    var app = angular.module('room', ['utils']);
 
-    app.controller('RoomController', ['$scope', 'CommonService', function ($scope, CommonService) {
+    app.controller('RoomController', ['$scope', 'Utils', function ($scope, Utils) {
 
         $scope.isVisible = function () {
-            return CommonService.isRoom;
+            return Utils.isRoom;
         };
 
     }]);

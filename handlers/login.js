@@ -52,12 +52,8 @@ function autologin(res, email, token, data) {
     if (account.token === token) {
         common.jsonResponse(res, 200, 'Authorized user \'' + email + '\'.');
     } else {
-        common.jsonResponse(res, 401, 'Invalid token');
+        common.jsonResponse(res, 401, 'Detected another usage of your account.');
     }
-}
-
-function reject(res, email) {
-    common.jsonResponse(res, 403, 'Invalid email \'' + email + '\'.');
 }
 
 function handleLogout(reqUrl, req, res) {
@@ -81,6 +77,10 @@ function logout(res, email, token, data) {
     } else {
         common.jsonResponse(res, 401, 'Invalid token');
     }
+}
+
+function reject(res, email) {
+    common.jsonResponse(res, 403, 'Invalid email \'' + email + '\'.');
 }
 
 exports.handleLogin = handleLogin;
