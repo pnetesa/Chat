@@ -16,6 +16,7 @@ function isExists(email, callback) {
 
 function clear() {
     redisClient.del(NAME);
+    console.log('-- Cleared account data');
 }
 
 exports.get = get;

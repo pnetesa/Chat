@@ -56,13 +56,18 @@ function token() {
     return Math.random().toString(36).substr(2);
 }
 
-function getUrlArg(reqUrl, name) {
+function getUrlObj(reqUrl, name) {
     var queryObj = querystring.parse(reqUrl.query);
     return JSON.parse(queryObj[name]);
+}
+
+function getUrlArg(reqUrl, name) {
+    return querystring.parse(reqUrl.query)[name];
 }
 
 exports.getContentType = getContentType;
 exports.hashCode = hashCode;
 exports.jsonResponse = jsonResponse;
 exports.token = token;
+exports.getUrlObj = getUrlObj;
 exports.getUrlArg = getUrlArg;

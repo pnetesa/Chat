@@ -24,6 +24,8 @@
 
         this.setUserInfo = function (username, email, token, remember) {
 
+            this.clearUserInfo();
+
             var userInfoObj = {
                 username: username,
                 email: email,
@@ -34,6 +36,16 @@
                 $.cookie(USER_INFO, JSON.stringify(userInfoObj), { expires: 366 * 10 });
             }
             this.userInfo = userInfoObj;
+        };
+
+        this.getConfig = function () {
+            if (this.getUserInfo()) {
+                return {
+                    params: {
+                        userInfo: this.getUserInfo()
+                    }
+                };
+            }
         };
 
         this.getUserInfo = function () {
@@ -48,6 +60,15 @@
 
         this.openPage = function (page) {
             $location.path(page);
+        };
+
+        this.canAccessProtected = function () {
+
+            if (!this.getUserInfo()) {
+                this.openPage('/');
+            }
+
+            return true;
         };
 
         return this;

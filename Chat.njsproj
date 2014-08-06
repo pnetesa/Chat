@@ -34,6 +34,7 @@
     <Compile Include="data\account.js" />
     <Compile Include="handlers\common.js" />
     <Compile Include="handlers\login.js" />
+    <Compile Include="handlers\lobby.js" />
     <Compile Include="handlers\register.js" />
     <Compile Include="handlers\routing.js" />
     <Compile Include="public\js\app.js" />
@@ -52,6 +53,7 @@
     <Content Include="package.json" />
     <Content Include="public\css\bootstrap.min.css" />
     <Content Include="public\css\main.css" />
+    <Content Include="public\include\logged-in.html" />
     <Content Include="public\include\register.html" />
     <Content Include="public\include\room.html" />
     <Content Include="public\include\lobby.html" />

@@ -1,23 +1,21 @@
-﻿<div ng-init="initRestricted()">
+﻿<div ng-init="init()">
     <a href ng-click="logout()">logout</a><logged-in></logged-in>
     <div class="block-panel">
         <div class="row">
             <div class="col-lg-12">
-                <div class="input-group">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" type="button">Create room</button>
-                    </span>
-                    <input type="text" class="form-control">
-                </div>
+                <form name="createRoomForm" ng-submit="createRoomForm.$valid && createRoom()">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">Create room</button>
+                        </span>
+                        <input type="text" class="form-control" ng-model="roomName" autofocus required>
+                    </div>
+                </form>
             </div>
         </div>
-        <h1>Available rooms</h1>
+        <h1 ng-show="rooms.length > 0">Available rooms</h1>
         <div class="list-group">
-            <a href ng-click="onRoomClick()" class="list-group-item active">Room #1</a>
-            <a href ng-click="onRoomClick()" class="list-group-item">Room #2</a>
-            <a href ng-click="onRoomClick()" class="list-group-item">Test room</a>
-            <a href ng-click="onRoomClick()" class="list-group-item">Stupid room</a>
-            <a href ng-click="onRoomClick()" class="list-group-item">Support room</a>
+            <a href ng-repeat="room in rooms" ng-click="onRoomClick()" class="list-group-item">{{ room.name }}</a>
         </div>
     </div>
 </div>

@@ -13,17 +13,11 @@
 
         $scope.autoLogin = function () {
 
-            var userInfo = Utils.getUserInfo();
+            var config = Utils.getConfig();
 
-            if (!userInfo) {
+            if (!config) {
                 return;
             }
-
-            var config = {
-                params: {
-                    userInfo: userInfo
-                }
-            };
 
             $http.get('/autologin.json', config)
                 .success(function (data) {

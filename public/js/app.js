@@ -43,13 +43,7 @@
 
         $scope.logout = function () {
 
-            var config = {
-                params: {
-                    userInfo: Utils.getUserInfo()
-                }
-            };
-
-            $http.get('/logout.json', config)
+            $http.get('/logout.json', Utils.getConfig())
                 .success(function (data) {
                     console.log(data.message);
                     Utils.clearUserInfo();
@@ -65,14 +59,8 @@
             Utils.openPage(page);
         };
 
-        $scope.initRestricted = function () {
-            if (!Utils.getUserInfo()) {
-                Utils.openPage('/');
-            }
-        };
-
         $scope.username = function () {
-            return Utils.getUserInfo().username;
+            return Utils.getUserInfo() ? Utils.getUserInfo().username : '';
         };
 
     }]);

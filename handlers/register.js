@@ -3,7 +3,7 @@ var accountData = require('../data/account.js');
 
 function handleRegister(reqUrl, req, res) {
 
-    var userInfo = common.getUrlArg(reqUrl, 'userInfo');
+    var userInfo = common.getUrlObj(reqUrl, 'userInfo');
 
     accountData.isExists(userInfo.email, function (err, result) {
 
