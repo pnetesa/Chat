@@ -2,6 +2,7 @@
 
     var app = angular.module('chat',
         [
+            'ngRoute',
             'login',
             'register',
             'lobby',
@@ -9,11 +10,36 @@
             'utils'
         ]);
 
-    app.controller('AppController', ['$scope', '$http', 'Utils', function ($scope, $http, Utils) {
+    app.config(['$routeProvider', function ($routeProvider) {
 
-        $scope.showPage = function (pageName) {
-            Utils.showPage(pageName);
-        };
+        $routeProvider
+            .when('/',
+                {
+                    templateUrl: 'include/login.html',
+                    controller: 'LoginController'
+                })
+            .when('/register',
+                {
+                    templateUrl: 'include/register.html',
+                    controller: 'RegisterController'
+                })
+            .when('/lobby',
+                {
+                    templateUrl: 'include/lobby.html',
+                    controller: 'LobbyController'
+                })
+            .when('/room',
+                {
+                    templateUrl: 'include/room.html',
+                    controller: 'RoomController'
+                })
+            .otherwise(
+                {
+                    redirectTo: '/'
+                });
+    }]);
+
+    app.controller('AppController', ['$scope', '$http', 'Utils', function ($scope, $http, Utils) {
 
         $scope.logout = function () {
 
@@ -27,7 +53,7 @@
                 .success(function (data) {
                     console.log(data.message);
                     Utils.clearToken();
-                    $scope.showPage('login');
+                    $scope.openPage('/login');
                 })
                 .error(function (data, status) {
                     Utils.showToast(data.message);
@@ -35,26 +61,16 @@
                 });
         };
 
+        $scope.openPage = function (page) {
+            Utils.openPage(page);
+        };
+
+        $scope.initRestricted = function () {
+            if (!Utils.getToken()) {
+                Utils.openPage('/');
+            }
+        };
+
     }]);
-
-    var createDirective = function (name, file) {
-
-        file = file || name;
-
-        app.directive(name, function () {
-            return {
-                restrict: 'E',
-                templateUrl: 'include/' + file + '.html',
-                controller: 'AppController',
-                controllerAs: 'appCtrl'
-            };
-        });
-
-    };
-
-    createDirective('login');
-    createDirective('register');
-    createDirective('lobby');
-    createDirective('room');
 
 })();

@@ -1,4 +1,4 @@
-﻿<div ng-controller="LoginController" ng-show="isVisible()" ng-init="autoLogin()" ng-cloak>
+﻿<div ng-init="autoLogin()">
     <form name="loginForm" ng-submit="loginForm.$valid && login()" class="block-panel">
         <h2 class="block-panel-heading">Sign in</h2>
         <input type="text" ng-model="loginInfo.email" class="form-control credentials" placeholder="Email address" autofocus="" required>
@@ -9,6 +9,6 @@
         <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
     </form>
     <form class="block-panel">
-        <button id="btn-register" ng-click="showPage('register')" class="btn btn-lg btn-block" type="submit">Register</button>
+        <button id="btn-register" ng-click="openPage('/register')" class="btn btn-lg btn-block" type="submit">Register</button>
     </form>
 </div>

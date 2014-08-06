@@ -4,12 +4,8 @@
 
     app.controller('LobbyController', ['$scope', 'Utils', function ($scope, Utils) {
 
-        $scope.isVisible = function () {
-            return Utils.isLobby;
-        };
-
         $scope.onRoomClick = function () {
-            Utils.showPage('room');
+            Utils.openPage('/room');
         };
 
     }]);

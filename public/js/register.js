@@ -22,16 +22,12 @@
                 .success(function (data) {
                     console.log(data.message);
                     Utils.setToken(data.email, data.token);
-                    Utils.showPage('lobby');
+                    Utils.openPage('/lobby');
                 })
                 .error(function (data, status) {
                     Utils.showToast(data.message);
                     console.log(status + " " + data.message);
                 });
-        };
-
-        $scope.isVisible = function () {
-            return Utils.isRegister;
         };
 
     }]);

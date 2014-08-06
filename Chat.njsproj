@@ -42,10 +42,12 @@
     <Compile Include="public\js\register.js" />
     <Compile Include="public\js\login.js" />
     <Compile Include="public\js\utils.js" />
+    <Compile Include="public\libs\angular-route.min.js" />
     <Compile Include="public\libs\angular.min.js" />
     <Compile Include="public\libs\bootstrap.min.js" />
     <Compile Include="handlers\default.js" />
     <Compile Include="public\libs\jquery.cookie.js" />
+    <Compile Include="public\libs\jquery.min.js" />
     <Compile Include="server.js" />
     <Content Include="package.json" />
     <Content Include="public\css\bootstrap.min.css" />

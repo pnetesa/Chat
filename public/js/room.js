@@ -4,9 +4,6 @@
 
     app.controller('RoomController', ['$scope', 'Utils', function ($scope, Utils) {
 
-        $scope.isVisible = function () {
-            return Utils.isRoom;
-        };
 
     }]);
 

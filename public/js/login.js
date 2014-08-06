@@ -28,7 +28,7 @@
             $http.get('/autologin.json', config)
                 .success(function (data) {
                     console.log(data.message);
-                    Utils.showPage('lobby');
+                    Utils.openPage('/lobby');
                 })
                 .error(function (data, status) {
                     Utils.showToast(data.message);
@@ -48,16 +48,12 @@
                 .success(function (data) {
                     console.log(data.message);
                     Utils.setToken(data.email, data.token, $scope.loginInfo.rememberMe);
-                    Utils.showPage('lobby');
+                    Utils.openPage('/lobby');
                 })
                 .error(function (data, status) {
                     Utils.showToast(data.message);
                     console.log(status + " " + data.message);
                 });
-        };
-
-        $scope.isVisible = function () {
-            return Utils.isLogin;
         };
 
     }]);
