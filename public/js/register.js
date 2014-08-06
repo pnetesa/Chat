@@ -6,6 +6,7 @@
 
         $scope.userInfo = Utils.isDev ?
             {
+                username: 'User',
                 email: 'user@email.com',
                 password: 'pass123'
             } : {};
@@ -21,7 +22,7 @@
             $http.get('/register.json', config)
                 .success(function (data) {
                     console.log(data.message);
-                    Utils.setToken(data.email, data.token);
+                    Utils.setUserInfo(data.username, data.email, data.token);
                     Utils.openPage('/lobby');
                 })
                 .error(function (data, status) {

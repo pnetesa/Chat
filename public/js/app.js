@@ -45,14 +45,14 @@
 
             var config = {
                 params: {
-                    tokenInfo: Utils.getToken()
+                    userInfo: Utils.getUserInfo()
                 }
             };
 
             $http.get('/logout.json', config)
                 .success(function (data) {
                     console.log(data.message);
-                    Utils.clearToken();
+                    Utils.clearUserInfo();
                     $scope.openPage('/login');
                 })
                 .error(function (data, status) {
@@ -66,11 +66,23 @@
         };
 
         $scope.initRestricted = function () {
-            if (!Utils.getToken()) {
+            if (!Utils.getUserInfo()) {
                 Utils.openPage('/');
             }
         };
 
+        $scope.username = function () {
+            return Utils.getUserInfo().username;
+        };
+
     }]);
+
+    app.directive('loggedIn', function () {
+        return {
+            restrict: 'E',
+            templateUrl: 'include/logged-in.html',
+            controller: 'AppController'
+        };
+    });
 
 })();

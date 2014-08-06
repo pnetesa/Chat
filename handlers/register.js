@@ -12,14 +12,15 @@ function handleRegister(reqUrl, req, res) {
         if (accountExists) {
             reject(res, userInfo.email);
         } else {
-            register(res, userInfo.email, userInfo.password);
+            register(res, userInfo.username, userInfo.email, userInfo.password);
         }
     });
 };
 
-function register(res, email, password) {
+function register(res, username, email, password) {
 
     var account = {
+        username: username,
         passHash: common.hashCode(password),
         token: common.token()
     };
@@ -28,6 +29,7 @@ function register(res, email, password) {
         if (result === 1) {
             common.jsonResponse(res, 200, {
                 message: 'Registered user \'' + email + '\'.',
+                username: username,
                 email: email,
                 token: account.token
             });

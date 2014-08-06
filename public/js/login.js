@@ -13,15 +13,15 @@
 
         $scope.autoLogin = function () {
 
-            var token = Utils.getToken();
+            var userInfo = Utils.getUserInfo();
 
-            if (!token) {
+            if (!userInfo) {
                 return;
             }
 
             var config = {
                 params: {
-                    tokenInfo: token
+                    userInfo: userInfo
                 }
             };
 
@@ -47,7 +47,7 @@
             $http.get('/login.json', config)
                 .success(function (data) {
                     console.log(data.message);
-                    Utils.setToken(data.email, data.token, $scope.loginInfo.rememberMe);
+                    Utils.setUserInfo(data.username, data.email, data.token, $scope.loginInfo.rememberMe);
                     Utils.openPage('/lobby');
                 })
                 .error(function (data, status) {

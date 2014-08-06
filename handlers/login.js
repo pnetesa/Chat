@@ -23,6 +23,7 @@ function login(res, email, password, data) {
         accountData.save(email, account, function (err, result) {
             common.jsonResponse(res, 200, {
                 message: 'Authorized user \'' + email + '\'.',
+                username: account.username,
                 email: email,
                 token: account.token
             });
@@ -34,13 +35,13 @@ function login(res, email, password, data) {
 }
 
 function handleAutologin(reqUrl, req, res) {
-    var tokenInfo = common.getUrlArg(reqUrl, 'tokenInfo');
-    accountData.get(tokenInfo.email, function (err, data) {
+    var userInfo = common.getUrlArg(reqUrl, 'userInfo');
+    accountData.get(userInfo.email, function (err, data) {
 
         if (!data) {
-            reject(res, tokenInfo.email);
+            reject(res, userInfo.email);
         } else {
-            autologin(res, tokenInfo.email, tokenInfo.token, data);
+            autologin(res, userInfo.email, userInfo.token, data);
         }
     });
 };
@@ -57,12 +58,12 @@ function autologin(res, email, token, data) {
 }
 
 function handleLogout(reqUrl, req, res) {
-    var tokenInfo = common.getUrlArg(reqUrl, 'tokenInfo');
-    accountData.get(tokenInfo.email, function (err, data) {
+    var userInfo = common.getUrlArg(reqUrl, 'userInfo');
+    accountData.get(userInfo.email, function (err, data) {
         if (!data) {
-            reject(res, tokenInfo.email);
+            reject(res, userInfo.email);
         } else {
-            logout(res, tokenInfo.email, tokenInfo.token, data);
+            logout(res, userInfo.email, userInfo.token, data);
         }
     });
 };

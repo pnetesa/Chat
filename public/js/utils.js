@@ -1,6 +1,6 @@
 ﻿(function () {
     var app = angular.module('utils', []);
-    var TOKEN = 'TOKEN';
+    var USER_INFO = 'USER_INFO';
 
     app.factory('Utils', ['$location', function ($location) {
 
@@ -22,24 +22,28 @@
             $toast.fadeIn(400).delay(3000).fadeOut(400);
         };
 
-        this.setToken = function (email, token, remember) {
+        this.setUserInfo = function (username, email, token, remember) {
 
-            var tokenObj = { email: email, token: token };
+            var userInfoObj = {
+                username: username,
+                email: email,
+                token: token
+            };
 
             if (remember) {
-                $.cookie(TOKEN, JSON.stringify(tokenObj), { expires: 366 * 10 });
+                $.cookie(USER_INFO, JSON.stringify(userInfoObj), { expires: 366 * 10 });
             }
-            this.token = tokenObj;
+            this.userInfo = userInfoObj;
         };
 
-        this.getToken = function () {
-            this.token = this.token || ($.cookie(TOKEN) ? JSON.parse($.cookie(TOKEN)) : undefined);
-            return this.token;
+        this.getUserInfo = function () {
+            this.userInfo = this.userInfo || ($.cookie(USER_INFO) ? JSON.parse($.cookie(USER_INFO)) : undefined);
+            return this.userInfo;
         };
 
-        this.clearToken = function () {
-            this.token = undefined;
-            $.removeCookie(TOKEN);
+        this.clearUserInfo = function () {
+            this.userInfo = undefined;
+            $.removeCookie(USER_INFO);
         };
 
         this.openPage = function (page) {
