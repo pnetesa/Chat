@@ -1,7 +1,7 @@
 ﻿<div ng-init="init()">
     <a href="#/lobby">back</a><logged-in></logged-in>
     <div class="block-panel">
-        <h2 class="block-panel-heading">Room #312</h2>
+        <h2 class="block-panel-heading">Room {{ room.name }}</h2>
         <div class="row message-input">
             <div class="col-lg-12">
                 <form name="sendMessageForm" ng-submit="sendMessageForm.$valid && sendMessage()">
@@ -14,13 +14,9 @@
                 </form>
             </div>
         </div>
-        <div class="panel panel-default">
+        <div class="panel panel-default" ng-show="messages.length > 0">
             <div class="panel-body chat-body">
-                <span class="message"><span class="user" style="color: #0A6">User#1</span>: Hello.</span>
-                <span class="message"><span class="user" style="color: #A00">User#2</span>: Hi!</span>
-                <span class="message"><span class="user" style="color: #06F">Alien</span>: Greatings, earthlings! I come in peace. Klaatu barada nikto. Here is my <a href="#">gift</a> to humanity</span>
-                <span class="message"><span class="user" style="color: #A00">User#2</span>: Wow!</span>
-                <span class="message"><span class="user" style="color: #0A6">User#1</span>: Radical, dude!</span>
+                <span class="message" ng-repeat="message in messages"><span class="user" style="color: {{ message.color }}">{{ message.username }}</span>: {{ message.text }}</span>
             </div>
         </div>
     </div>

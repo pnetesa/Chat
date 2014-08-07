@@ -30,12 +30,14 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="data\message.js" />
     <Compile Include="data\room.js" />
     <Compile Include="data\account.js" />
     <Compile Include="handlers\common.js" />
     <Compile Include="handlers\login.js" />
     <Compile Include="handlers\lobby.js" />
     <Compile Include="handlers\register.js" />
+    <Compile Include="handlers\room.js" />
     <Compile Include="handlers\routing.js" />
     <Compile Include="public\js\app.js" />
     <Compile Include="public\js\room.js" />

@@ -2,7 +2,9 @@
 
     var app = angular.module('room', ['utils']);
 
-    app.controller('RoomController', ['$scope', '$routeParams', 'Utils', function ($scope, $routeParams, Utils) {
+    app.controller('RoomController', ['$scope', 'Utils', function ($scope, Utils) {
+
+        $scope.messages = [];
 
         $scope.init = function () {
 
@@ -10,19 +12,40 @@
                 return;
             }
 
-            var roomId = $routeParams.roomId;
+            $scope.$on('$routeChangeSuccess', function () {
 
-            if (!roomId) {
-                this.openPage('/');
-            }
+                $scope.room = Utils.getRoom();
+                if (!$scope.room) {
+                    Utils.openPage('/');
+                    return;
+                }
 
-
+                $scope.server = io();
+                $scope.server.on('connect', onServerConnect);
+                $scope.server.on('message', onServerMessage);
+            });
         };
 
         $scope.sendMessage = function () {
-            alert($scope.message);
 
+            var message = {
+                username: Utils.getUserInfo().username,
+                color: Utils.getUserInfo().color,
+                text: $scope.message
+            };
+
+            $scope.server.emit('message', $scope.room.id, message);
             $scope.message = '';
+            $scope.messages.unshift(message);
+        };
+
+        var onServerConnect = function () {
+            $scope.server.emit('join', $scope.room.id, Utils.getUserInfo());
+        };
+
+        var onServerMessage = function (message) {
+            $scope.messages.unshift(message);
+            $scope.$apply();
         };
 
     }]);

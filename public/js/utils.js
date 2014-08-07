@@ -71,6 +71,14 @@
             return true;
         };
 
+        this.setRoom = function (room) {
+            this.room = room;
+        };
+
+        this.getRoom = function () {
+            return this.room;
+        };
+
         return this;
     }]);
 

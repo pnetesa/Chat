@@ -39,7 +39,8 @@
                 });
         };
 
-        $scope.onRoomClick = function () {
+        $scope.openRoom = function (room) {
+            Utils.setRoom(room);
             Utils.openPage('/room');
         };
 

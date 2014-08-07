@@ -28,7 +28,7 @@
                     templateUrl: 'include/lobby.html',
                     controller: 'LobbyController'
                 })
-            .when('/room/:roomId',
+            .when('/room',
                 {
                     templateUrl: 'include/room.html',
                     controller: 'RoomController'

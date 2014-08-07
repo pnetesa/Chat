@@ -15,7 +15,7 @@
         </div>
         <h1 ng-show="rooms.length > 0">Available rooms</h1>
         <div class="list-group">
-            <a href="#/room/{{ room.id }}" ng-repeat="room in rooms" class="list-group-item">{{ room.name }}</a>
+            <a href ng-click="openRoom(room)" ng-repeat="room in rooms" class="list-group-item">{{ room.name }}</a>
         </div>
     </div>
 </div>
