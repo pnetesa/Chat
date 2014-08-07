@@ -34,7 +34,7 @@ function hashCode(text) {
     var hash = 0;
     var char;
 
-    for (var i = 0; i < text.length; i++) {
+    for (var i = 0, length = text.length; i < length; i++) {
         char = text.charCodeAt(i);
         hash = ((hash << 5) - hash) + char;
         hash |= 0;

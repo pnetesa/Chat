@@ -40,8 +40,12 @@ function register(res, username, email, password) {
 }
 
 function reject(res, email) {
+
+    if (utils.isDev) {
+        accountData.clear();
+    }
+
     common.jsonResponse(res, 401, 'User \'' + email + '\' already registered. Try another email.');
-    //accountData.clear();
 }
 
 exports.handleRegister = handleRegister;

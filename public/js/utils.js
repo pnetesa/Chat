@@ -1,6 +1,6 @@
 ﻿(function () {
-    var app = angular.module('utils', []);
-    var USER_INFO = 'USER_INFO';
+    var app = angular.module('utils', []),
+        USER_INFO = 'USER_INFO';
 
     app.factory('Utils', ['$location', function ($location) {
 

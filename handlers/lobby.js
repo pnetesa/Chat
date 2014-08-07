@@ -29,15 +29,22 @@ function handleCreateRoom(reqUrl, req, res) {
     var userInfo = common.getUrlObj(reqUrl, 'userInfo');
     login.authorize(res, userInfo, function () {
 
+        var name = common.getUrlArg(reqUrl, 'name');
+
         var room = {
-            name: common.getUrlArg(reqUrl, 'name')
+            id: 'r' + common.hashCode(name),
+            name: name
         }
 
         roomData.save(room, function (err, result) {
             if (result > 0) {
                 getRooms(res);
             } else {
-                //roomData.clear();
+
+                if (utils.isDev) {
+                    roomData.clear();
+                }
+
                 common.jsonResponse(res, 401, 'Room \'' + room.name + '\' already exists. Try another name.');
             }
         });
