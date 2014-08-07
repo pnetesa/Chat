@@ -41,7 +41,7 @@ function handleCreateRoom(reqUrl, req, res) {
                 getRooms(res);
             } else {
 
-                if (utils.isDev) {
+                if (common.isDev) {
                     roomData.clear();
                 }
 

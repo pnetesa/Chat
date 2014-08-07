@@ -22,7 +22,7 @@
             $http.get('/register.json', config)
                 .success(function (data) {
                     console.log(data.message);
-                    Utils.setUserInfo(data.username, data.email, data.token);
+                    Utils.setUserInfo(data);
                     Utils.openPage('/lobby');
                 })
                 .error(function (data, status) {

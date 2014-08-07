@@ -1,6 +1,20 @@
 ﻿var common = require('./common.js');
 var accountData = require('../data/account.js');
 
+var availableColors = [
+    '#0000ff',
+    '#8a2be2',
+    '#a52a2a',
+    '#deb887',
+    '#5f9ea0',
+    '#6495ed',
+    '#dc143c',
+    '#006400',
+    '#ff8c00',
+    '#b22222',
+    '#cd5c5c',
+];
+
 function handleRegister(reqUrl, req, res) {
 
     var userInfo = common.getUrlObj(reqUrl, 'userInfo');
@@ -21,6 +35,7 @@ function register(res, username, email, password) {
 
     var account = {
         username: username,
+        color: getColor(),
         passHash: common.hashCode(password),
         token: common.token()
     };
@@ -29,7 +44,8 @@ function register(res, username, email, password) {
         if (result === 1) {
             common.jsonResponse(res, 200, {
                 message: 'Registered user \'' + email + '\'.',
-                username: username,
+                username: account.username,
+                color: account.color,
                 email: email,
                 token: account.token
             });
@@ -39,9 +55,13 @@ function register(res, username, email, password) {
     });
 }
 
+function getColor() {
+    return availableColors[Math.ceil(Math.random() * availableColors.length)];
+}
+
 function reject(res, email) {
 
-    if (utils.isDev) {
+    if (common.isDev) {
         accountData.clear();
     }
 

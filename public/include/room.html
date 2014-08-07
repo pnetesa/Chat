@@ -4,12 +4,14 @@
         <h2 class="block-panel-heading">Room #312</h2>
         <div class="row message-input">
             <div class="col-lg-12">
-                <div class="input-group">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" type="button">Send</button>
-                    </span>
-                    <input type="text" class="form-control">
-                </div>
+                <form name="sendMessageForm" ng-submit="sendMessageForm.$valid && sendMessage()">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">Send</button>
+                        </span>
+                        <input type="text" class="form-control" ng-model="message" autofocus required>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="panel panel-default">

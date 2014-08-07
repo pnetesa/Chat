@@ -41,7 +41,7 @@
             $http.get('/login.json', config)
                 .success(function (data) {
                     console.log(data.message);
-                    Utils.setUserInfo(data.username, data.email, data.token, $scope.loginInfo.rememberMe);
+                    Utils.setUserInfo(data, $scope.loginInfo.rememberMe);
                     Utils.openPage('/lobby');
                 })
                 .error(function (data, status) {

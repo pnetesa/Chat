@@ -23,6 +23,7 @@ function login(res, email, password, data) {
         accountData.save(email, account, function (err, result) {
             authorizedUser(res, {
                 username: account.username,
+                color: account.color,
                 email: email,
                 token: account.token
             });

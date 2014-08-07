@@ -19,6 +19,12 @@
 
         };
 
+        $scope.sendMessage = function () {
+            alert($scope.message);
+
+            $scope.message = '';
+        };
+
     }]);
 
 })();

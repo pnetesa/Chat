@@ -22,20 +22,20 @@
             $toast.fadeIn(400).delay(3000).fadeOut(400);
         };
 
-        this.setUserInfo = function (username, email, token, remember) {
+        this.setUserInfo = function (obj, remember) {
 
             this.clearUserInfo();
 
-            var userInfoObj = {
-                username: username,
-                email: email,
-                token: token
+            this.userInfo = {
+                username: obj.username,
+                color: obj.color,
+                email: obj.email,
+                token: obj.token
             };
 
             if (remember) {
-                $.cookie(USER_INFO, JSON.stringify(userInfoObj), { expires: 366 * 10 });
+                $.cookie(USER_INFO, JSON.stringify(this.userInfo), { expires: 366 * 10 });
             }
-            this.userInfo = userInfoObj;
         };
 
         this.getConfig = function () {

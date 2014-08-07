@@ -13,5 +13,5 @@ http.createServer(function (req, res) {
     handler(reqUrl, req, res);
 
 }).listen(port);
-console.log('Server has started');
+console.log('-- Server has started');
 

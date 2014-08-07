@@ -10,7 +10,6 @@ var contentTypes = {
     'png': 'image/png'
 };
 
-
 function getContentType(req) {
 
     var extension = 'html';
@@ -23,7 +22,6 @@ function getContentType(req) {
 
     return contentTypes[extension];
 };
-
 
 function hashCode(text) {
 
@@ -64,6 +62,8 @@ function getUrlObj(reqUrl, name) {
 function getUrlArg(reqUrl, name) {
     return querystring.parse(reqUrl.query)[name];
 }
+
+exports.isDev = true;
 
 exports.getContentType = getContentType;
 exports.hashCode = hashCode;
