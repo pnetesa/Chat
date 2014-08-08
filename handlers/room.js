@@ -1,18 +1,38 @@
 ﻿var common = require('./common.js');
+var login = require('./login.js');
 var messageData = require('../data/message.js');
 
 function clientConnected(client) {
 
     client.on('join', function (roomId, userInfo) {
-        join(client, roomId, userInfo);
+        authorizeClient(client, userInfo, function () {
+            join(client, roomId, userInfo);
+        });
     });
 
     client.on('message', function (roomId, msg) {
-        message(client, roomId, msg);
+        authorizeClient(client, client.userInfo, function () {
+            message(client, roomId, msg);
+        });
     });
 
     client.on('disconnect', function (userInfo) {
-        disconnect(client, userInfo);
+        authorizeClient(client, client.userInfo, function () {
+            disconnect(client, userInfo);
+        });
+    });
+}
+
+function authorizeClient(client, userInfo, success) {
+
+    login.authorize(userInfo, function (authorized) {
+
+        if (!authorized) {
+            notifySystem(client, 'Not authorized!');
+            return;
+        }
+
+        success();
     });
 }
 
@@ -22,6 +42,7 @@ function join(client, roomId, userInfo) {
     client.roomId = roomId
     notifySystem(client, 
         client.userInfo.username + ' has joined the chat',
+        true,
         userInfo.color);
 }
 
@@ -30,8 +51,7 @@ function sendHistory(client, roomId) {
 
         var rows = result.reverse();
         rows.forEach(function (row) {
-            var message = JSON.parse(row);
-            client.emit('message', message);
+            notify(client, JSON.parse(row));
         });
 
     });
@@ -44,22 +64,29 @@ function message(client, msg) {
 function disconnect(client) {
     notifySystem(client,
         client.userInfo.username + ' has left',
+        true,
         client.userInfo.color);
 }
 
-function notifySystem(client, text, color) {
+function notifySystem(client, text, all, color) {
+
     var message = {
         isSystem: true,
         username: '',
-        color: color || '#ffffff',
+        color: color || '#000000',
         text: text
     };
-    notifyAll(client, message);
+
+    all ? notifyAll(client, message) : notify(client, message);
 }
 
 function notifyAll(client, message) {
     messageData.save(client.roomId, message);
     client.broadcast.emit('message', message);
+}
+
+function notify(client, message) {
+    client.emit('message', message);
 }
 
 exports.clientConnected = clientConnected;

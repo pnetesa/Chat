@@ -56,7 +56,7 @@ function register(res, username, email, password) {
 }
 
 function getColor() {
-    return availableColors[Math.ceil(Math.random() * availableColors.length)];
+    return availableColors[Math.ceil(Math.random() * (availableColors.length - 1))];
 }
 
 function reject(res, email) {

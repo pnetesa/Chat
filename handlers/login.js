@@ -35,32 +35,42 @@ function login(res, email, password, data) {
 }
 
 function handleAutologin(reqUrl, req, res) {
-    var userInfo = common.getUrlObj(reqUrl, 'userInfo');
-    authorize(res, userInfo, function (authorized) {
-        if (authorized) {
-            authorizedUser(res, userInfo.email);
-        } else {
-            invalidToken(res, 'Detected another usage of your account.');
-        }
-    }, true);
+
+    authorizeRequest(reqUrl, res, function (userInfo) {
+        authorizedUser(res, userInfo.email);
+    });
+
 };
 
-function authorize(res, userInfo, callback, handleNonAuthorized) {
+function authorize(userInfo, callback) {
+
+    if (!userInfo) {
+        callback(false);
+        return;
+    }
+
     accountData.get(userInfo.email, function (err, data) {
 
         if (!data) {
-            invalidEmail(res, userInfo.email);
+            callback(false);
         } else {
-
             var account = JSON.parse(data);
-            var authorized = userInfo.token === account.token;
-
-            if (!authorized && !handleNonAuthorized) {
-                invalidToken(res);
-            } else {
-                callback(authorized);
-            }
+            callback(userInfo.token === account.token);
         }
+    });
+}
+
+function authorizeRequest(reqUrl, res, success) {
+
+    var userInfo = common.getUrlObj(reqUrl, 'userInfo');
+    authorize(userInfo, function (authorized) {
+
+        if (!authorized) {
+            accessDenied(res);
+            return;
+        }
+
+        success(userInfo);
     });
 }
 
@@ -115,7 +125,12 @@ function invalidToken(res, message) {
     common.jsonResponse(res, 401, message);
 }
 
+function accessDenied(res) {
+    common.jsonResponse(res, 401, 'Access denied');
+}
+
 exports.handleLogin = handleLogin;
 exports.handleAutologin = handleAutologin;
 exports.handleLogout = handleLogout;
 exports.authorize = authorize;
+exports.authorizeRequest = authorizeRequest;

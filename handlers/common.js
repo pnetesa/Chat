@@ -56,7 +56,9 @@ function token() {
 
 function getUrlObj(reqUrl, name) {
     var queryObj = querystring.parse(reqUrl.query);
-    return JSON.parse(queryObj[name]);
+    if (queryObj.hasOwnProperty(name)) {
+        return JSON.parse(queryObj[name]);
+    }
 }
 
 function getUrlArg(reqUrl, name) {

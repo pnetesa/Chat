@@ -4,10 +4,10 @@ var login = require('./login.js');
 
 function handleGetRooms(reqUrl, req, res) {
 
-    var userInfo = common.getUrlObj(reqUrl, 'userInfo');
-    login.authorize(res, userInfo, function () {
+    login.authorizeRequest(reqUrl, res, function () {
         getRooms(res);
     });
+
 };
 
 function getRooms(res) {
@@ -26,30 +26,32 @@ function getRooms(res) {
 
 function handleCreateRoom(reqUrl, req, res) {
 
-    var userInfo = common.getUrlObj(reqUrl, 'userInfo');
-    login.authorize(res, userInfo, function () {
-
+    login.authorizeRequest(reqUrl, res, function () {
         var name = common.getUrlArg(reqUrl, 'name');
-
-        var room = {
-            id: 'r' + common.hashCode(name),
-            name: name
-        }
-
-        roomData.save(room, function (err, result) {
-            if (result > 0) {
-                getRooms(res);
-            } else {
-
-                if (common.isDev) {
-                    roomData.clear();
-                }
-
-                common.jsonResponse(res, 401, 'Room \'' + room.name + '\' already exists. Try another name.');
-            }
-        });
+        createRoom(res, name);
     });
 };
+
+function createRoom(res, name) {
+
+    var room = {
+        id: 'r' + common.hashCode(name),
+        name: name
+    }
+
+    roomData.save(room, function (err, result) {
+        if (result > 0) {
+            getRooms(res);
+        } else {
+
+            if (common.isDev) {
+                roomData.clear();
+            }
+
+            common.jsonResponse(res, 401, 'Room \'' + room.name + '\' already exists. Try another name.');
+        }
+    });
+}
 
 exports.handleGetRooms = handleGetRooms;
 exports.handleCreateRoom = handleCreateRoom;
