@@ -11,9 +11,17 @@ function save(room, callback) {
 }
 
 function clear() {
-    redisClient.smembers(NAME, function (err, rooms) {
-        rooms.forEach(function (room) {
-            redisClient.srem(NAME, room);
+    redisClient.smembers(NAME, function (err, records) {
+        records.forEach(function (record) {
+            var roomId = JSON.parse(record).id;
+
+            redisClient.lrange(roomId, 0, -1, function (err, result) {
+                result.forEach(function (message) {
+                    redisClient.lrem(roomId, 0, message);
+                });
+            });
+
+            redisClient.srem(NAME, record);
         });
         console.log('-- Cleared room data');
     });

@@ -8,7 +8,7 @@
 
         $scope.init = function () {
 
-            if (!Utils.canAccessProtected) {
+            if (Utils.signedOutQuits()) {
                 return;
             }
 

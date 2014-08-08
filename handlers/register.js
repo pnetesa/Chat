@@ -2,17 +2,17 @@
 var accountData = require('../data/account.js');
 
 var availableColors = [
-    '#0000ff',
-    '#8a2be2',
-    '#a52a2a',
-    '#deb887',
-    '#5f9ea0',
+    '#721B1B',
+    '#6D1B72',
+    '#361B72',
+    '#1B5372',
+    '#1B7249',
     '#6495ed',
-    '#dc143c',
-    '#006400',
-    '#ff8c00',
-    '#b22222',
-    '#cd5c5c',
+    '#49721B',
+    '#69721B',
+    '#AA7100',
+    '#7C7C7C',
+    '#000000',
 ];
 
 function handleRegister(reqUrl, req, res) {

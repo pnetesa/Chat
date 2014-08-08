@@ -8,22 +8,24 @@
 
         $scope.init = function () {
 
-            if (!Utils.canAccessProtected) {
+            if (Utils.signedOutQuits()) {
                 return;
             }
 
-            $scope.$on('$routeChangeSuccess', function () {
+            $scope.room = Utils.getRoom();
+            if (!$scope.room) {
+                Utils.openPage('/');
+                return;
+            }
 
-                $scope.room = Utils.getRoom();
-                if (!$scope.room) {
-                    Utils.openPage('/');
-                    return;
-                }
+            $scope.server = io();
+            $scope.server.on('connect', onServerConnect);
+            $scope.server.on('message', onServerMessage);
+        };
 
-                $scope.server = io();
-                $scope.server.on('connect', onServerConnect);
-                $scope.server.on('message', onServerMessage);
-            });
+        $scope.back = function () {
+            $scope.server.disconnect();
+            Utils.openPage('/lobby');
         };
 
         $scope.sendMessage = function () {
@@ -34,7 +36,7 @@
                 text: $scope.message
             };
 
-            $scope.server.emit('message', $scope.room.id, message);
+            $scope.server.emit('message', message);
             $scope.message = '';
             $scope.messages.unshift(message);
         };

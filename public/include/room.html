@@ -1,5 +1,5 @@
 ﻿<div ng-init="init()">
-    <a href="#/lobby">back</a><logged-in></logged-in>
+    <a href ng-click="back()">back</a><logged-in></logged-in>
     <div class="block-panel">
         <h2 class="block-panel-heading">Room {{ room.name }}</h2>
         <div class="row message-input">
@@ -16,7 +16,11 @@
         </div>
         <div class="panel panel-default" ng-show="messages.length > 0">
             <div class="panel-body chat-body">
-                <span class="message" ng-repeat="message in messages"><span class="user" style="color: {{ message.color }}">{{ message.username }}</span>: {{ message.text }}</span>
+                <span class="message" ng-repeat="message in messages">
+                    <span class="user" style="color: {{ message.color }}">{{ message.username }}</span><span ng-hide="message.isSystem">:</span> 
+                    <i style="color: {{ message.color }}" ng-show="message.isSystem">{{ message.text }}</i>
+                    <span ng-hide="message.isSystem">{{ message.text }}</span>
+                </span>
             </div>
         </div>
     </div>

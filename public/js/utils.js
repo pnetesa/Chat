@@ -62,13 +62,14 @@
             $location.path(page);
         };
 
-        this.canAccessProtected = function () {
+        this.signedOutQuits = function () {
 
             if (!this.getUserInfo()) {
                 this.openPage('/');
+                return true;
             }
 
-            return true;
+            return false;
         };
 
         this.setRoom = function (room) {
