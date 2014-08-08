@@ -82,11 +82,33 @@ function notifySystem(client, text, all, color) {
 
 function notifyAll(client, message) {
     messageData.save(client.roomId, message);
-    client.broadcast.emit('message', message);
+    client.broadcast.emit('message', client.roomId, message);
 }
 
 function notify(client, message) {
-    client.emit('message', message);
+    client.emit('message', client.roomId, message);
 }
 
+
+function handleGetHistory(reqUrl, req, res) {
+
+    login.authorizeRequest(reqUrl, res, function (userInfo) {
+
+        var roomId = common.getUrlArg(reqUrl, 'roomId');
+        messageData.getAll(roomId, function (err, records) {
+            var messages = [];
+
+            records.forEach(function (record) {
+                var message = JSON.parse(record);
+                messages.push(message);
+            });
+
+            common.jsonResponse(res, 200, messages);
+        });
+    });
+
+};
+
+
 exports.clientConnected = clientConnected;
+exports.handleGetHistory = handleGetHistory;

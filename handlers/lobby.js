@@ -11,12 +11,12 @@ function handleGetRooms(reqUrl, req, res) {
 };
 
 function getRooms(res) {
-    roomData.getAll(function (err, roomsData) {
+    roomData.getAll(function (err, records) {
 
         var rooms = [];
 
-        roomsData.forEach(function (roomData) {
-            var room = JSON.parse(roomData);
+        records.forEach(function (record) {
+            var room = JSON.parse(record);
             rooms.push(room);
         });
 
