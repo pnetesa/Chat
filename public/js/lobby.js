@@ -20,6 +20,7 @@
                 .error(function (data, status) {
                     Utils.showToast(data.message);
                     console.log(status + " " + data.message);
+                    Utils.openPage('/');
                 });
         };
 
@@ -36,6 +37,7 @@
                 .error(function (data, status) {
                     Utils.showToast(data.message);
                     console.log(status + " " + data.message);
+                    Utils.openPage('/');
                 });
         };
 
