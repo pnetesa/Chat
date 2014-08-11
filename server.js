@@ -22,6 +22,6 @@ function handleRequest(req, res) {
 }
 
 app.listen(port);
-console.log('-- Server has started');
+console.log('-- Server runs on port ' + port);
 
 io.on('connection', room.clientConnected);

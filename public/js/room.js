@@ -7,6 +7,7 @@
         $scope.messages = [];
         $scope.MAX_MESSAGES = 20;
         $scope.historyExpanded = false;
+        $scope.inUpload = false;
 
         $scope.init = function () {
 
@@ -68,6 +69,21 @@
             $scope.messages.unshift(message);
             $scope.messages = $scope.historyExpanded ?
                 $scope.messages : $scope.messages.slice(0, $scope.MAX_MESSAGES);
+        };
+
+        $scope.toggleShowUpload = function () {
+            $scope.inUpload = !$scope.inUpload;
+        };
+
+        $scope.uploadFile = function () {
+
+            $http.post('/upload-file', Utils.getConfig())
+                .success(function (data) {
+                })
+                .error(function (data, status) {
+                    Utils.showToast(data.message);
+                    console.log(status + " " + data.message);
+                });
         };
 
         var onServerConnect = function () {

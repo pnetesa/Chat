@@ -8,6 +8,7 @@
     "email": ""
   },
   "dependencies": {
+    "formidable": "^1.0.15",
     "redis": "^0.11.0",
     "socket.io": "^1.0.6"
   }

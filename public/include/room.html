@@ -10,6 +10,20 @@
                             <button class="btn btn-default" type="submit">Send</button>
                         </span>
                         <input type="text" class="form-control" ng-model="message" autofocus required>
+                        <span class="input-group-btn">
+                            <button class="btn btn-default upload-btn" ng-click="toggleShowUpload()" ng-disabled="inUpload" title="Upload file" type="button">&nbsp;</button>
+                        </span>
+                    </div>
+                </form>
+                <form name="uploadFileForm" ng-show="inUpload" ng-submit="uploadFileForm.$valid && uploadFile()">
+                    <div class="input-group">
+                        <input type="file" class="form-control" name="upload" required />
+                        <span class="input-group-btn">
+                            <button class="btn btn-default ok-btn" title="Upload" type="submit">&nbsp;</button>
+                        </span>
+                        <span class="input-group-btn">
+                            <button class="btn btn-default cancel-btn" ng-click="toggleShowUpload()" title="Cancel" type="button">&nbsp;</button>
+                        </span>
                     </div>
                 </form>
             </div>

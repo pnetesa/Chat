@@ -54,3 +54,18 @@ body {
 	word-break: keep-all;
 	word-wrap: break-word;
 }
+
+.upload-btn {
+	background: url('../img/upload.png') 50% 50% no-repeat;
+	background-color: #ffffff;
+}
+
+.ok-btn {
+	background: url('../img/ok.png') 50% 50% no-repeat;
+	background-color: #ffffff;
+}
+
+.cancel-btn {
+	background: url('../img/cancel.png') 50% 50% no-repeat;
+	background-color: #ffffff;
+}
