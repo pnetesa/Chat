@@ -1,4 +1,6 @@
-﻿var common = require('./common.js');
+﻿var fs = require('fs');
+var formidable = require('formidable');
+var common = require('./common.js');
 var login = require('./login.js');
 var messageData = require('../data/message.js');
 
@@ -10,9 +12,15 @@ function clientConnected(client) {
         });
     });
 
-    client.on('message', function (roomId, msg) {
+    client.on('message', function (msg) {
         authorizeClient(client, client.userInfo, function () {
-            message(client, roomId, msg);
+            message(client, msg);
+        });
+    });
+
+    client.on('uploaded-file', function (msg) {
+        authorizeClient(client, client.userInfo, function () {
+            uploadedFile(client, msg);
         });
     });
 
@@ -61,6 +69,12 @@ function message(client, msg) {
     notifyAll(client, msg);
 }
 
+function uploadedFile(client, msg) {
+    msg.isFile = true;
+    notify(client, msg);
+    notifyAll(client, msg);
+}
+
 function disconnect(client) {
     notifySystem(client,
         client.userInfo.username + ' has left',
@@ -89,7 +103,6 @@ function notify(client, message) {
     client.emit('message', client.roomId, message);
 }
 
-
 function handleGetHistory(reqUrl, req, res) {
 
     login.authorizeRequest(reqUrl, res, function (userInfo) {
@@ -109,6 +122,57 @@ function handleGetHistory(reqUrl, req, res) {
 
 };
 
+function handleUploadFile(reqUrl, req, res) {
+
+    if (req.method.toLowerCase() !== 'post') {
+        common.jsonResponse(res, 403, 'Invalid http method');
+        return;
+    }
+
+    var form = new formidable.IncomingForm();
+    form.uploadDir = common.uploadDir;
+    form.keepExtensions = true;
+    form.parse(req, function (err, fields, files) {
+
+        if (err) {
+            common.jsonResponse(res, 400, err);
+            console.log(err);
+            return;
+        }
+
+        var userInfo = { email: fields.email, token: fields.token };
+        login.authorize(userInfo, function (authorized) {
+
+            if (!authorized) {
+                common.jsonResponse(res, 401, 'Invalid token');
+                return;
+            }
+
+            var directory = common.uploadDir + '/' + +new Date();
+            var file = directory + '/' + files.upload.name;
+
+            fs.mkdir(directory, function (err) {
+
+                fs.rename(files.upload.path, file, function (err) {
+                    if (err) {
+                        console.log(err);
+                        fs.unlink(file);
+                        fs.rename(files.upload.path, file);
+                    }
+
+                    common.jsonResponse(res, 200, {
+                        filename: files.upload.name,
+                        filepath: file.substr(file.indexOf('upload/')),
+                    });
+                });
+            });
+
+        });
+    });
+
+
+}
 
 exports.clientConnected = clientConnected;
 exports.handleGetHistory = handleGetHistory;
+exports.handleUploadFile = handleUploadFile;

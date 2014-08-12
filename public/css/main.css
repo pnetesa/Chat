@@ -69,3 +69,12 @@ body {
 	background: url('../img/cancel.png') 50% 50% no-repeat;
 	background-color: #ffffff;
 }
+
+.loading {
+	width: 20px;
+	height: 20px;
+}
+
+.download {
+	font-style: italic;
+}

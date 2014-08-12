@@ -8,6 +8,7 @@
         $scope.MAX_MESSAGES = 20;
         $scope.historyExpanded = false;
         $scope.inUpload = false;
+        $scope.uploading = false;
 
         $scope.init = function () {
 
@@ -77,13 +78,39 @@
 
         $scope.uploadFile = function () {
 
-            $http.post('/upload-file', Utils.getConfig())
-                .success(function (data) {
-                })
-                .error(function (data, status) {
-                    Utils.showToast(data.message);
-                    console.log(status + " " + data.message);
-                });
+            $scope.uploading = true;
+
+            $http({
+                method: 'POST',
+                url: '/upload-file',
+                headers: { 'Content-Type': 'multipart/form-data' },
+                data: {
+                    email: Utils.getUserInfo().email,
+                    token: Utils.getUserInfo().token,
+                    upload: $scope.file
+                },
+                transformRequest: getFormDataObject
+            })
+            .success(function (data) {
+                console.log('Uploaded: ' + data.filename);
+                $scope.uploading = false;
+                $scope.inUpload = false;
+
+                $('#uploadFile').val(undefined);
+
+                var message = {
+                    username: Utils.getUserInfo().username,
+                    color: Utils.getUserInfo().color,
+                    filename: data.filename,
+                    filepath: data.filepath
+                };
+
+                $scope.server.emit('uploaded-file', message);
+            })
+            .error(function (data, status) {
+                Utils.showToast(data.message);
+                console.log(status + " " + data.message);
+            });
         };
 
         var onServerConnect = function () {
@@ -102,6 +129,32 @@
             $scope.$apply();
         };
 
+        var getFormDataObject = function (data, headersGetter) {
+            var formData = new FormData();
+            angular.forEach(data, function (value, key) {
+                formData.append(key, value);
+            });
+
+            var headers = headersGetter();
+            delete headers['Content-Type'];
+
+            return formData;
+        };
     }]);
+
+    app.directive('file', function () {
+        return {
+            scope: {
+                file: '='
+            },
+            link: function (scope, el, attrs) {
+                el.bind('change', function (event) {
+                    var file = event.target.files[0];
+                    scope.file = file ? file : undefined;
+                    scope.$apply();
+                });
+            }
+        };
+    });
 
 })();

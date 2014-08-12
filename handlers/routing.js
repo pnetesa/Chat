@@ -6,5 +6,6 @@ exports.map = {
     '/logout.json': require('./login').handleLogout,
     '/get-rooms.json': require('./lobby').handleGetRooms,
     '/create-room.json': require('./lobby').handleCreateRoom,
-    '/get-history.json': require('./room').handleGetHistory
+    '/get-history.json': require('./room').handleGetHistory,
+    '/upload-file': require('./room').handleUploadFile
 };

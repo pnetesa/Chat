@@ -6,6 +6,7 @@ var routing = require('./handlers/routing');
 var room = require('./handlers/room');
 
 var port = process.env.port || 5555;
+require('./handlers/common').uploadDir = __dirname + '/public/upload';
 
 var app = http.createServer(handleRequest);
 var io = socket(app);

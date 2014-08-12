@@ -13,8 +13,10 @@ function handleDefault(reqUrl, req, res) {
     });
 };
 
-function getFilePath (req) {
-    return __dirname + '../../public' + (req.url === '/' ? '/index.html' : req.url);
+function getFilePath(req) {
+    return __dirname + '../../public' +
+        (req.url === '/' ?
+            '/index.html' : decodeURIComponent(req.url));
 };
 
 exports.handleDefault = handleDefault;

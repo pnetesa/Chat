@@ -3,10 +3,10 @@
 var contentTypes = {
     'html': 'text/html',
     'css': 'text/css',
+    'gif': 'image/gif',
     'ico': 'image/x-icon',
     'js': 'application/javascript',
     'json': 'application/json',
-    'jpg': 'image/jpeg',
     'png': 'image/png'
 };
 
@@ -20,7 +20,7 @@ function getContentType(req) {
         }
     }
 
-    return contentTypes[extension];
+    return contentTypes[extension] || 'application/octet-stream';
 };
 
 function hashCode(text) {
@@ -66,6 +66,7 @@ function getUrlArg(reqUrl, name) {
 }
 
 exports.isDev = true;
+exports.uploadDir = '';
 
 exports.getContentType = getContentType;
 exports.hashCode = hashCode;
