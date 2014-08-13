@@ -55,6 +55,7 @@
     <Content Include="package.json" />
     <Content Include="public\css\bootstrap.min.css" />
     <Content Include="public\css\main.css" />
+    <Content Include="public\favicon.ico" />
     <Content Include="public\img\cancel.png" />
     <Content Include="public\img\loading.gif" />
     <Content Include="public\img\ok.png" />
