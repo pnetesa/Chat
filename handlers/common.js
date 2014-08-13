@@ -65,7 +65,7 @@ function getUrlArg(reqUrl, name) {
     return querystring.parse(reqUrl.query)[name];
 }
 
-exports.isDev = true;
+//exports.isDev = true;
 exports.uploadDir = '';
 
 exports.getContentType = getContentType;
