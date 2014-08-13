@@ -4,6 +4,7 @@ var getContentType = require('./common.js').getContentType;
 function handleDefault(reqUrl, req, res) {
     fs.readFile(getFilePath(req), function (err, file) {
         if (err) {
+            console.log(err);
             res.writeHead(500, { 'Content-Type': 'text/plain' });
             res.end('500: Not found');
         } else {

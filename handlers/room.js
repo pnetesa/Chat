@@ -135,12 +135,16 @@ function handleUploadFile(reqUrl, req, res) {
     form.parse(req, function (err, fields, files) {
 
         if (err) {
-            common.jsonResponse(res, 400, err);
             console.log(err);
+            common.jsonResponse(res, 400, err);
             return;
         }
 
-        var userInfo = { email: fields.email, token: fields.token };
+        var userInfo = {
+            email: fields.email,
+            token: fields.token
+        };
+
         login.authorize(userInfo, function (authorized) {
 
             if (!authorized) {
@@ -148,29 +152,31 @@ function handleUploadFile(reqUrl, req, res) {
                 return;
             }
 
-            var directory = common.uploadDir + '/' + +new Date();
-            var file = directory + '/' + files.upload.name;
-
-            fs.mkdir(directory, function (err) {
-
-                fs.rename(files.upload.path, file, function (err) {
-                    if (err) {
-                        console.log(err);
-                        fs.unlink(file);
-                        fs.rename(files.upload.path, file);
-                    }
-
-                    common.jsonResponse(res, 200, {
-                        filename: files.upload.name,
-                        filepath: file.substr(file.indexOf('upload/')),
-                    });
-                });
-            });
-
+            saveFile(res, files.upload);
         });
     });
+}
 
+function saveFile(res, upload) {
 
+    var directory = common.uploadDir + '/' + +new Date();
+    var file = directory + '/' + upload.name;
+
+    fs.mkdir(directory, function (err) {
+
+        fs.rename(upload.path, file, function (err) {
+            if (err) {
+                console.log(err);
+                fs.unlink(file);
+                fs.rename(upload.path, file);
+            }
+
+            common.jsonResponse(res, 200, {
+                filename: upload.name,
+                filepath: file.substr(file.indexOf('upload/')),
+            });
+        });
+    });
 }
 
 exports.clientConnected = clientConnected;

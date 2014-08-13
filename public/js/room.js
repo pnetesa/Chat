@@ -96,7 +96,7 @@
                 $scope.uploading = false;
                 $scope.inUpload = false;
 
-                $('#uploadFile').val(undefined);
+                $scope.file = undefined;
 
                 var message = {
                     username: Utils.getUserInfo().username,
@@ -142,19 +142,30 @@
         };
     }]);
 
-    app.directive('file', function () {
+    app.directive('file', ['$parse', function ($parse) {
         return {
             scope: {
                 file: '='
             },
             link: function (scope, el, attrs) {
+
                 el.bind('change', function (event) {
                     var file = event.target.files[0];
                     scope.file = file ? file : undefined;
                     scope.$apply();
                 });
+
+                var modelAccessor = $parse(attrs.file);
+                scope.$watch(modelAccessor, function (value) {
+
+                    if (value) {
+                        return;
+                    }
+
+                    $('#uploadFile').val(value);
+                });
             }
         };
-    });
+    }]);
 
 })();
