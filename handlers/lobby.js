@@ -48,7 +48,7 @@ function createRoom(res, name) {
                 roomData.clear();
             }
 
-            common.jsonResponse(res, 401, 'Room \'' + room.name + '\' already exists. Try another name.');
+            common.jsonResponse(res, 403, 'Room \'' + room.name + '\' already exists. Try another name.');
         }
     });
 }
