@@ -19,7 +19,7 @@
                 return;
             }
 
-            $http.get('/autologin.json', config)
+            $http.get('/autologin', config)
                 .success(function (data) {
                     console.log(data.message);
                     Utils.openPage('/lobby');
@@ -32,13 +32,7 @@
 
         $scope.login = function () {
 
-            var config = {
-                params: {
-                    loginInfo: $scope.loginInfo
-                }
-            };
-
-            $http.get('/login.json', config)
+            $http.post('/login', $scope.loginInfo)
                 .success(function (data) {
                     console.log(data.message);
                     Utils.setUserInfo(data, $scope.loginInfo.rememberMe);

@@ -43,7 +43,7 @@
             var config = Utils.getConfig();
             config.params.roomId = $scope.room.id;
 
-            $http.get('/get-history.json', config)
+            $http.get('/get-history', config)
                 .success(function (data) {
                     console.log(data);
                     $scope.messages = data;

@@ -28,7 +28,6 @@
 
             this.userInfo = {
                 username: obj.username,
-                color: obj.color,
                 email: obj.email,
                 token: obj.token
             };

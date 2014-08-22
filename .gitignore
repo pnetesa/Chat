@@ -1,3 +1,4 @@
 /*.suo
 /obj
 /public/upload
+/node_modules

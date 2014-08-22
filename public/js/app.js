@@ -43,7 +43,7 @@
 
         $scope.logout = function () {
 
-            $http.get('/logout.json', Utils.getConfig())
+            $http.get('/logout', Utils.getConfig())
                 .success(function (data) {
                     console.log(data.message);
                     Utils.clearUserInfo();

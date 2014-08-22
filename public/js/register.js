@@ -19,7 +19,7 @@
                 }
             };
 
-            $http.get('/register.json', config)
+            $http.get('/register', config)
                 .success(function (data) {
                     console.log(data.message);
                     Utils.setUserInfo(data);

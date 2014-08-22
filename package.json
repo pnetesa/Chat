@@ -2,14 +2,20 @@
   "name": "Chat",
   "version": "0.0.0",
   "description": "Chat",
-  "main": "server.js",
+  "main": "app.js",
   "author": {
     "name": "pnetesa",
     "email": ""
   },
   "dependencies": {
+    "async": "^0.9.0",
+    "express": "3.4.4",
     "formidable": "^1.0.15",
-    "redis": "^0.11.0",
-    "socket.io": "^1.0.6"
+    "jade": "*",
+    "nconf": "^0.6.9",
+    "redis": "^0.12.1",
+    "socket.io": "^1.0.6",
+    "stylus": "*",
+    "winston": "^0.7.3"
   }
 }
