@@ -11,6 +11,6 @@ module.exports = function (app) {
     app.get('/get-rooms', authorize.get,  require('./lobby').get);
     app.post('/create-room', authorize.post, require('./lobby').post);
 
-    app.get('/get-history', require('./room').get);
+    app.get('/get-history', authorize.get, require('./room').get);
     app.post('/upload-file', require('./room').post);
 };

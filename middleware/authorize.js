@@ -35,3 +35,4 @@ function authorize(userInfo, next) {
 
 module.exports.get = get;
 module.exports.post = post;
+module.exports.authorize = authorize;

@@ -1,135 +1,49 @@
 ﻿var fs = require('fs');
 var formidable = require('formidable');
+var path = require('path');
+var config = require('../config');
 var common = require('./common.js');
-var login = require('./login.js');
 var messageData = require('../data/message.js');
+var authorization = require('../middleware/authorize');
+var async = require('async');
 
-function clientConnected(client) {
-
-    client.on('join', function (roomId, userInfo) {
-        authorizeClient(client, userInfo, function () {
-            join(client, roomId, userInfo);
-        });
-    });
-
-    client.on('message', function (msg) {
-        authorizeClient(client, client.userInfo, function () {
-            message(client, msg);
-        });
-    });
-
-    client.on('uploaded-file', function (msg) {
-        authorizeClient(client, client.userInfo, function () {
-            uploadedFile(client, msg);
-        });
-    });
-
-    client.on('disconnect', function (userInfo) {
-        authorizeClient(client, client.userInfo, function () {
-            disconnect(client, userInfo);
-        });
-    });
-}
-
-function authorizeClient(client, userInfo, success) {
-
-    login.authorize(userInfo, function (authorized) {
-
-        if (!authorized) {
-            notifySystem(client, 'Not authorized!');
-            return;
-        }
-
-        success();
-    });
-}
-
-function join(client, roomId, userInfo) {
-    sendHistory(client, roomId);
-    client.userInfo = userInfo;
-    client.roomId = roomId
-    notifySystem(client, 
-        client.userInfo.username + ' has joined the chat',
-        true,
-        userInfo.color);
-}
-
-function sendHistory(client, roomId) {
-    messageData.get(roomId, function (err, result) {
-
-        var rows = result.reverse();
-        rows.forEach(function (row) {
-            notify(client, JSON.parse(row));
-        });
-
-    });
-}
-
-function message(client, msg) {
-    notifyAll(client, msg);
-}
-
-function uploadedFile(client, msg) {
-    msg.isFile = true;
-    notify(client, msg);
-    notifyAll(client, msg);
-}
-
-function disconnect(client) {
-    notifySystem(client,
-        client.userInfo.username + ' has left',
-        true,
-        client.userInfo.color);
-}
-
-function notifySystem(client, text, all, color) {
-
-    var message = {
-        isSystem: true,
-        username: '',
-        color: color || '#000000',
-        text: text
-    };
-
-    all ? notifyAll(client, message) : notify(client, message);
-}
-
-function notifyAll(client, message) {
-    messageData.save(client.roomId, message);
-    client.broadcast.emit('message', client.roomId, message);
-}
-
-function notify(client, message) {
-    client.emit('message', client.roomId, message);
-}
-
-//function get(reqUrl, req, res) {
 function get(req, res, next) {
 
-    login.authorizeRequest(reqUrl, res, function (userInfo) {
+    var roomId = req.query.roomId;
+    messageData.getAll(roomId, function (err, records) {
 
-        var roomId = common.getUrlArg(reqUrl, 'roomId');
-        messageData.getAll(roomId, function (err, records) {
-            var messages = [];
+        if (err) {
+            return next(err);
+        }
 
-            records.forEach(function (record) {
-                var message = JSON.parse(record);
-                messages.push(message);
-            });
+        var messages = [];
 
-            common.jsonResponse(res, 200, messages);
+        records.forEach(function (record) {
+            var message = JSON.parse(record);
+            messages.push(message);
         });
-    });
 
+        res.json(messages);
+    });
 };
 
-//function post(reqUrl, req, res) {
 function post(req, res, next) {
+    
+    async.waterfall([
+        function (callback) {
+            parseForm(req, callback);
+        },
+        saveFile,
+    ], function (err, result) {
+        if (err) {
+            return next(err);
+        }
 
-    if (req.method.toLowerCase() !== 'post') {
-        common.jsonResponse(res, 403, 'Invalid http method');
-        return;
-    }
+        res.json(result);
+    });
+}
+
+function parseForm(req, callback) {
 
     var form = new formidable.IncomingForm();
     form.uploadDir = common.uploadDir;
@@ -137,9 +51,7 @@ function post(req, res, next) {
     form.parse(req, function (err, fields, files) {
 
         if (err) {
-            console.log(err);
-            common.jsonResponse(res, 400, err);
-            return;
+            return callback(err);
         }
 
         var userInfo = {
@@ -147,40 +59,45 @@ function post(req, res, next) {
             token: fields.token
         };
 
-        login.authorize(userInfo, function (authorized) {
-
-            if (!authorized) {
-                common.jsonResponse(res, 401, 'Invalid token');
-                return;
+        authorization.authorize(userInfo, function (err) {
+            if (err) {
+                return callback(err);
             }
 
-            saveFile(res, files.upload);
+            callback(null, req, files.upload)
         });
     });
 }
 
-function saveFile(res, upload) {
+function saveFile(req, upload, callback) {
 
-    var directory = common.uploadDir + '/' + +new Date();
-    var file = directory + '/' + upload.name;
+    var directory = path.join(req.app.get('uploadDir'), +new Date() + '');
+    var file = path.join(directory, upload.name);
 
     fs.mkdir(directory, function (err) {
+
+        if (err) {
+            return callback(err);
+        }
 
         fs.rename(upload.path, file, function (err) {
             if (err) {
                 console.log(err);
                 fs.unlink(file);
-                fs.rename(upload.path, file);
+                fs.rename(upload.path, file, function (err) { // 2nd try...
+                    if (err) {
+                        return callback(err);
+                    }
+                });
             }
 
-            common.jsonResponse(res, 200, {
+            callback(null, {
                 filename: upload.name,
-                filepath: file.substr(file.indexOf('upload/')),
+                filepath: file.substr(file.indexOf(config.get('uploadDir')))
             });
         });
     });
 }
 
-exports.clientConnected = clientConnected;
 exports.get = get;
 exports.post = post;

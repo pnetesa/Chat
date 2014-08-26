@@ -147,14 +147,15 @@
             scope: {
                 file: '='
             },
-            link: function (scope, el, attrs) {
+            link: function (scope, element, attrs) {
 
-                el.bind('change', function (event) {
+                element.bind('change', function (event) {
                     var file = event.target.files[0];
                     scope.file = file ? file : undefined;
                     scope.$apply();
                 });
 
+                var el = element;
                 var modelAccessor = $parse(attrs.file);
                 scope.$watch(modelAccessor, function (value) {
 
@@ -162,7 +163,7 @@
                         return;
                     }
 
-                    $('#uploadFile').val(value);
+                    $(el).val(value);
                 });
             }
         };

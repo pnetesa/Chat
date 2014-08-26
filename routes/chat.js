@@ -1,10 +1,16 @@
 ﻿var login = require('./login.js');
 var messageData = require('../data/message.js');
 var config = require('../config');
+var log = require('../utils/log');
 
 function init(server) {
     var io = require('socket.io').listen(server);
+
     io.set('origins', config.get('socketsOrigins')); // 403
+
+    io.use(function (socket, next) {
+        var handshakeData = socket.request;
+    });
 
     io.sockets.on('connection', clientConnected);
 }

@@ -1,5 +1,7 @@
 ﻿var common = require('./common.js');
 var roomData = require('../data/room.js');
+var config = require('../config');
+var log = require('../utils/log');
 var HttpError = require('../utils/error').HttpError;
 
 function get(req, res, next) {
@@ -30,6 +32,12 @@ function post(req, res, next) {
         if (err) {
             return next(err);
         } else if (result === 0) {
+
+            if (config.get('isDev')) {
+                roomData.clear();
+                log.info('Cleared room data. All rooms and messages deleted');
+            }
+
             return next(
                 new HttpError(401,
                     'Room \'' + room.name + '\' already exists. Try another name.'));

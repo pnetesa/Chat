@@ -6,14 +6,16 @@ var log = require('./utils/log');
 var HttpError = require('./utils/error').HttpError;
 
 var app = express();
+var publicDir = path.join(__dirname, 'public');
 
 // all environments
-app.set('port', config.get('port'));
+app.set('port', process.env.PORT || config.get('port'));
+app.set('env', config.get('isDev') ? 'development' : 'release')
+app.set('uploadDir', path.join(publicDir, config.get('uploadDir')));
 
-app.use(express.favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(express.favicon(path.join(publicDir, 'favicon.ico')));
 
-app.use(express.logger(
-    config.get('isDev') ? 'dev' : 'default'));
+app.use(express.logger(config.get('isDev') ? 'dev' : 'default'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
@@ -24,13 +26,15 @@ app.use(app.router);
 
 require('./routes')(app);
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(publicDir)));
 
 app.use(function (err, req, res, next) {
 
     if (typeof err === 'number') { // next(404);
         err = new HttpError(err);
     }
+
+    log.error(err);
 
     if (err instanceof HttpError) { // next(new HttpError(...));
         return res.sendHttpError(err);
@@ -40,7 +44,6 @@ app.use(function (err, req, res, next) {
         var errorHandler = app.use(express.errorHandler());
         errorHandler(err, req, res, next);
     } else {
-        log.error(err);
         err = new HttpError(500);
         res.sendHttpError(err);
     }

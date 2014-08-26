@@ -1,4 +1,6 @@
 ﻿var common = require('./common.js');
+var config = require('../config');
+var log = require('../utils/log');
 var accountData = require('../data/account.js');
 var HttpError = require('../utils/error').HttpError;
 var async = require('async');
@@ -45,6 +47,12 @@ function ensureNewUser(userInfo, callback) {
 
         var accountExists = result > 0;
         if (accountExists) {
+
+            if (config.get('isDev')) {
+                accountData.clear();
+                log.info('Cleared account data');
+            }
+
             return callback(new HttpError(401, 'User \'' + userInfo.email + '\' already registered. Try another email.'));
         }
 

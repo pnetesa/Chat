@@ -41,36 +41,10 @@ function hashCode(text) {
     return hash;
 }
 
-function jsonResponse(res, statusCode, arg) {
-
-    var result = arg && (typeof (arg) === 'string') ? { message: arg }
-                                                    : arg ? arg : {};
-
-    res.writeHead(statusCode, { 'Content-Type': getContentType('json') });
-    res.end(JSON.stringify(result));
-}
-
 function token() {
     return Math.random().toString(36).substr(2);
 }
 
-function getUrlObj(reqUrl, name) {
-    var queryObj = querystring.parse(reqUrl.query);
-    if (queryObj.hasOwnProperty(name)) {
-        return JSON.parse(queryObj[name]);
-    }
-}
-
-function getUrlArg(reqUrl, name) {
-    return querystring.parse(reqUrl.query)[name];
-}
-
-exports.isDev = true;
-exports.uploadDir = '';
-
 exports.getContentType = getContentType;
 exports.hashCode = hashCode;
-exports.jsonResponse = jsonResponse;
 exports.token = token;
-exports.getUrlObj = getUrlObj;
-exports.getUrlArg = getUrlArg;
