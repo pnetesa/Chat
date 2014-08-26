@@ -1,5 +1,7 @@
 ﻿var common = require('./common.js');
 var accountData = require('../data/account.js');
+var HttpError = require('../utils/error').HttpError;
+var async = require('async');
 
 var availableColors = [
     '#6495ed',
@@ -16,23 +18,41 @@ var availableColors = [
 ];
 
 function post(req, res, next) {
-//function handleRegister(reqUrl, req, res) {
 
-    var userInfo = common.getUrlObj(reqUrl, 'userInfo');
-
-    accountData.isExists(userInfo.email, function (err, result) {
-
-        var accountExists = result > 0;
-
-        if (accountExists) {
-            reject(res, userInfo.email);
-        } else {
-            register(res, userInfo.username, userInfo.email, userInfo.password);
+    var userInfo = req.body.userInfo;
+    async.waterfall([
+        function (callback) {
+            ensureNewUser(userInfo, callback);
+        },
+        function (callback) {
+            register(userInfo.username, userInfo.email, userInfo.password, callback);
         }
+    ], function (err, result) {
+        if (err) {
+            return next(err);
+        }
+
+        res.json(result);
     });
 };
 
-function register(res, username, email, password) {
+function ensureNewUser(userInfo, callback) {
+    accountData.isExists(userInfo.email, function (err, result) {
+
+        if (err) {
+            return callback(err);
+        }
+
+        var accountExists = result > 0;
+        if (accountExists) {
+            return callback(new HttpError(401, 'User \'' + userInfo.email + '\' already registered. Try another email.'));
+        }
+
+        callback(null);
+    });
+}
+
+function register(username, email, password, callback) {
 
     var account = {
         username: username,
@@ -42,31 +62,22 @@ function register(res, username, email, password) {
     };
 
     accountData.save(email, account, function (err, result) {
-        if (result === 1) {
-            common.jsonResponse(res, 200, {
-                message: 'Registered user \'' + email + '\'.',
-                username: account.username,
-                color: account.color,
-                email: email,
-                token: account.token
-            });
-        } else {
-            common.jsonResponse(res, 403, 'Registration failed. Cannot create user account.');
+
+        if (err) {
+            return callback(err);
         }
+
+        callback(null, {
+            message: 'Registered user \'' + email + '\'.',
+            username: account.username,
+            email: email,
+            token: account.token
+        });
     });
 }
 
 function getColor() {
     return availableColors[Math.ceil(Math.random() * (availableColors.length - 1))];
-}
-
-function reject(res, email) {
-
-    if (common.isDev) {
-        accountData.clear();
-    }
-
-    common.jsonResponse(res, 401, 'User \'' + email + '\' already registered. Try another email.');
 }
 
 exports.post = post;

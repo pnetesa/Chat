@@ -13,13 +13,13 @@
 
         $scope.autoLogin = function () {
 
-            var config = Utils.getConfig();
+            var getArgs = Utils.getArgs();
 
-            if (!config) {
+            if (!getArgs) {
                 return;
             }
 
-            $http.get('/autologin', config)
+            $http.get('/autologin', getArgs)
                 .success(function (data) {
                     console.log(data.message);
                     Utils.openPage('/lobby');

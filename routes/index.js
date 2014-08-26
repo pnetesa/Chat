@@ -4,9 +4,9 @@ module.exports = function (app) {
     app.post('/register', require('./register').post);
 
     app.post('/login', require('./login').post);
-    app.get('/autologin', require('./login').get); // ??? session
+    app.get('/autologin', authorize.get, require('./login').get);
 
-    app.post('/logout', require('./logout').post);
+    app.post('/logout', authorize.post, require('./logout').post);
 
     app.get('/get-rooms', authorize.get,  require('./lobby').get);
     app.post('/create-room', authorize.post, require('./lobby').post);

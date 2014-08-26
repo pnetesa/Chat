@@ -35,7 +35,7 @@ function post(req, res, next) {
                     'Room \'' + room.name + '\' already exists. Try another name.'));
         }
 
-        next();
+        res.json({ message: 'Created room \'' + room.name + '\'.' });
     });
 };
 

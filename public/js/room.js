@@ -40,10 +40,10 @@
 
         $scope.showHistory = function () {
 
-            var config = Utils.getConfig();
-            config.params.roomId = $scope.room.id;
+            var getArgs = Utils.getArgs();
+            getArgs.params.roomId = $scope.room.id;
 
-            $http.get('/get-history', config)
+            $http.get('/get-history', getArgs)
                 .success(function (data) {
                     console.log(data);
                     $scope.messages = data;

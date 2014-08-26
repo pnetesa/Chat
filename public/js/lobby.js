@@ -16,7 +16,7 @@
         };
 
         $scope.getRooms = function () {
-            $http.get('/get-rooms', Utils.getConfig())
+            $http.get('/get-rooms', Utils.getArgs())
                 .success(function (data) {
                     console.log(data);
                     $scope.rooms = data;
@@ -33,14 +33,12 @@
 
         $scope.createRoom = function () {
 
-            var params = {
-                userInfo: Utils.getUserInfo(),
-                name: $scope.roomName
-            }
+            var postArgs = Utils.postArgs();
+            postArgs.name = $scope.roomName;
 
-            $http.post('/create-room', params)
+            $http.post('/create-room', postArgs)
                 .success(function (data) {
-                    console.log(data);
+                    console.log(data.message);
                     $scope.roomName = '';
                     $scope.getRooms();
                 })
