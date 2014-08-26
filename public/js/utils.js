@@ -33,11 +33,11 @@
             };
 
             if (remember) {
-                $.cookie(USER_INFO, JSON.stringify(this.userInfo), { expires: 366 * 10 });
+                window.localStorage.setItem(USER_INFO, JSON.stringify(this.userInfo));
             }
         };
 
-        this.getConfig = function () {
+        this.getArgs = function () {
             if (this.getUserInfo()) {
                 return {
                     params: {
@@ -47,14 +47,23 @@
             }
         };
 
+        this.postArgs = function () {
+            if (this.getUserInfo()) {
+                return {
+                    userInfo: this.getUserInfo()
+                };
+            }
+        };
+
         this.getUserInfo = function () {
-            this.userInfo = this.userInfo || ($.cookie(USER_INFO) ? JSON.parse($.cookie(USER_INFO)) : undefined);
+            this.userInfo = this.userInfo || (window.localStorage.getItem(USER_INFO) ?
+                JSON.parse(window.localStorage.getItem(USER_INFO)) : undefined);
             return this.userInfo;
         };
 
         this.clearUserInfo = function () {
             this.userInfo = undefined;
-            $.removeCookie(USER_INFO);
+            window.localStorage.removeItem(USER_INFO);
         };
 
         this.openPage = function (page) {
