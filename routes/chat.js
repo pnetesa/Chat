@@ -1,68 +1,68 @@
-﻿var login = require('./login.js');
-var messageData = require('../data/message.js');
+﻿var messageData = require('../data/message.js');
 var config = require('../config');
-var log = require('../utils/log');
+var authorization = require('../middleware/authorize');
 
 function init(server) {
     var io = require('socket.io').listen(server);
-
-    io.set('origins', config.get('socketsOrigins')); // 403
-
-    io.use(function (socket, next) {
-        var handshakeData = socket.request;
-    });
-
+    io.set('origins', config.get('socketsOrigins'));
     io.sockets.on('connection', clientConnected);
 }
 
 function clientConnected(client) {
 
     client.on('join', function (roomId, userInfo) {
-        authorizeClient(client, userInfo, function () {
-            join(client, roomId, userInfo);
+        authorizeClient(client, userInfo, function (account) {
+            join(client, roomId, userInfo.email, account);
         });
     });
 
-    client.on('message', function (msg) {
-        authorizeClient(client, client.userInfo, function () {
-            message(client, msg);
+    client.on('message', function (text, callback) {
+        authorizeClient(client, client.userInfo, function (account) {
+            message(client, text, callback, account);
         });
     });
 
     client.on('uploaded-file', function (msg) {
-        authorizeClient(client, client.userInfo, function () {
-            uploadedFile(client, msg);
+        authorizeClient(client, client.userInfo, function (account) {
+            uploadedFile(client, msg, account);
         });
     });
 
-    client.on('disconnect', function (userInfo) {
-        authorizeClient(client, client.userInfo, function () {
-            disconnect(client, userInfo);
+    client.on('disconnect', function () {
+        authorizeClient(client, client.userInfo, function (account) {
+            disconnect(client, account);
         });
     });
 }
 
 function authorizeClient(client, userInfo, success) {
 
-    login.authorize(userInfo, function (authorized) {
-
-        if (!authorized) {
-            notifySystem(client, 'Not authorized!');
+    authorization.authorize(userInfo, function (err, account) {
+        if (err) {
+            client.emit('unauthorized');
             return;
         }
 
-        success();
+        success(account);
     });
+
 }
 
-function join(client, roomId, userInfo) {
+function join(client, roomId, email, account) {
     sendHistory(client, roomId);
-    client.userInfo = userInfo;
+    client.userInfo = {
+        email: email,
+        token: account.token
+    };
     client.roomId = roomId
-    notifySystem(client, 
-        client.userInfo.username + ' has joined the chat',
-        true,
-        userInfo.color);
+
+    var msg = getSystemMsg(
+        account.username + ' has joined the chat',
+        account.color);
+
+    messageData.save(client.roomId, msg);
+
+    notifyOthers(client, msg);
 }
 
 function sendHistory(client, roomId) {
@@ -70,48 +70,64 @@ function sendHistory(client, roomId) {
 
         var rows = result.reverse();
         rows.forEach(function (row) {
-            notify(client, JSON.parse(row));
+            notifyMe(client, JSON.parse(row));
         });
 
     });
 }
 
-function message(client, msg) {
-    notifyAll(client, msg);
+function message(client, text, callback, account) {
+
+    var msg = {
+        username: account.username,
+        color: account.color,
+        text: text
+    };
+
+    messageData.save(client.roomId, msg);
+
+    notifyMe(client, msg);
+    notifyOthers(client, msg);
+
+    callback && callback();
 }
 
-function uploadedFile(client, msg) {
+function uploadedFile(client, msg, account) {
+
     msg.isFile = true;
-    notify(client, msg);
-    notifyAll(client, msg);
+    msg.username = account.username;
+    msg.color = account.color;
+
+    messageData.save(client.roomId, msg);
+
+    notifyMe(client, msg);
+    notifyOthers(client, msg);
 }
 
-function disconnect(client) {
-    notifySystem(client,
-        client.userInfo.username + ' has left',
-        true,
-        client.userInfo.color);
+function disconnect(client, account) {
+    var msg = getSystemMsg(
+        account.username + ' has left',
+        account.color);
+
+    messageData.save(client.roomId, msg);
+    notifyOthers(client, msg);
 }
 
-function notifySystem(client, text, all, color) {
-
-    var message = {
+function getSystemMsg(text, color) {
+    return {
         isSystem: true,
         username: '',
         color: color || '#000000',
         text: text
     };
-
-    all ? notifyAll(client, message) : notify(client, message);
 }
 
-function notifyAll(client, message) {
-    messageData.save(client.roomId, message);
-    client.broadcast.emit('message', client.roomId, message);
-}
-
-function notify(client, message) {
+function notifyMe(client, message) {
     client.emit('message', client.roomId, message);
+}
+
+function notifyOthers(client, message) {
+    client.broadcast.emit('message', client.roomId, message);
 }
 
 module.exports = init;

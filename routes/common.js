@@ -1,29 +1,4 @@
-﻿var querystring = require('querystring');
-
-var contentTypes = {
-    'html': 'text/html',
-    'css': 'text/css',
-    'gif': 'image/gif',
-    'ico': 'image/x-icon',
-    'js': 'application/javascript',
-    'json': 'application/json',
-    'png': 'image/png'
-};
-
-function getContentType(req) {
-
-    var extension = 'html';
-    if (req.url) {
-        var index = req.url.lastIndexOf('.');
-        if (index >= 0) {
-            extension = req.url.substr(index + 1);
-        }
-    }
-
-    return contentTypes[extension] || 'application/octet-stream';
-};
-
-function hashCode(text) {
+﻿function hashCode(text) {
 
     if (!text) {
         return 0;
@@ -45,6 +20,5 @@ function token() {
     return Math.random().toString(36).substr(2);
 }
 
-exports.getContentType = getContentType;
 exports.hashCode = hashCode;
 exports.token = token;

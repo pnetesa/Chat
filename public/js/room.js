@@ -25,6 +25,7 @@
             $scope.server = io({ forceNew: true });
             $scope.server.on('connect', onServerConnect);
             $scope.server.on('message', onServerMessage);
+            $scope.server.on('unauthorized', onUnauthorized);
         };
 
         $scope.getStyle = function (message) {
@@ -52,24 +53,19 @@
                 .error(function (data, status) {
                     Utils.showToast(data.message);
                     console.log(status + " " + data.message);
+
+                    if (status === 403) { // Not authorized
+                        Utils.openPage('/');
+                    }
                 });
 
         };
 
         $scope.sendMessage = function () {
 
-            var message = {
-                username: Utils.getUserInfo().username,
-                color: Utils.getUserInfo().color,
-                text: $scope.message
-            };
-
-            $scope.server.emit('message', message);
-            $scope.message = '';
-
-            $scope.messages.unshift(message);
-            $scope.messages = $scope.historyExpanded ?
-                $scope.messages : $scope.messages.slice(0, $scope.MAX_MESSAGES);
+            $scope.server.emit('message', $scope.message, function () {
+                $scope.message = '';
+            });
         };
 
         $scope.toggleShowUpload = function () {
@@ -99,8 +95,6 @@
                 $scope.file = undefined;
 
                 var message = {
-                    username: Utils.getUserInfo().username,
-                    color: Utils.getUserInfo().color,
                     filename: data.filename,
                     filepath: data.filepath
                 };
@@ -127,6 +121,10 @@
             $scope.messages = $scope.historyExpanded ?
                 $scope.messages : $scope.messages.slice(0, $scope.MAX_MESSAGES);
             $scope.$apply();
+        };
+
+        var onUnauthorized = function () {
+            Utils.openPage('/');
         };
 
         var getFormDataObject = function (data, headersGetter) {

@@ -2,7 +2,6 @@
 var formidable = require('formidable');
 var path = require('path');
 var config = require('../config');
-var common = require('./common.js');
 var messageData = require('../data/message.js');
 var authorization = require('../middleware/authorize');
 var async = require('async');
@@ -45,8 +44,10 @@ function post(req, res, next) {
 
 function parseForm(req, callback) {
 
+    var uploadDir = req.app.get('uploadDir');
+
     var form = new formidable.IncomingForm();
-    form.uploadDir = common.uploadDir;
+    form.uploadDir = uploadDir;
     form.keepExtensions = true;
     form.parse(req, function (err, fields, files) {
 
@@ -64,14 +65,14 @@ function parseForm(req, callback) {
                 return callback(err);
             }
 
-            callback(null, req, files.upload)
+            callback(null, uploadDir, files.upload)
         });
     });
 }
 
-function saveFile(req, upload, callback) {
+function saveFile(uploadDir, upload, callback) {
 
-    var directory = path.join(req.app.get('uploadDir'), +new Date() + '');
+    var directory = path.join(uploadDir, +new Date() + '');
     var file = path.join(directory, upload.name);
 
     fs.mkdir(directory, function (err) {

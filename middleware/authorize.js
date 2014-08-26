@@ -25,7 +25,7 @@ function authorize(userInfo, next) {
         } else {
             var account = JSON.parse(data);
             if (userInfo.token === account.token) {
-                next();
+                next(null, account);
             } else {
                 next(new HttpError(403, "Invalid token"));
             }

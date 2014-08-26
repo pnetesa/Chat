@@ -1,6 +1,4 @@
-﻿var common = require('./common.js');
-var accountData = require('../data/account.js');
-var HttpError = require('../utils/error').HttpError;
+﻿var accountData = require('../data/account.js');
 
 function post(req, res, next) {
 
@@ -12,7 +10,7 @@ function post(req, res, next) {
         }
 
         var account = JSON.parse(data);
-
+        account.token = '';
         accountData.save(userInfo.email, account, function (err, result) {
             
             if (err) {
