@@ -12,32 +12,43 @@
                 return;
             }
 
-            $http.get('/get-rooms.json', Utils.getConfig())
-                .success(function (data) {
-                    console.log(data);
-                    $scope.rooms = data;
-                })
-                .error(function (data, status) {
-                    Utils.showToast(data.message);
-                    console.log(status + " " + data.message);
-                    Utils.openPage('/');
-                });
+            $scope.getRooms();
         };
 
-
-        $scope.createRoom = function () {
-            var config = Utils.getConfig();
-            config.params.name = $scope.roomName;
-            $http.get('/create-room.json', config)
+        $scope.getRooms = function () {
+            $http.get('/get-rooms', Utils.getArgs())
                 .success(function (data) {
                     console.log(data);
                     $scope.rooms = data;
-                    $scope.roomName = '';
                 })
                 .error(function (data, status) {
                     Utils.showToast(data.message);
                     console.log(status + " " + data.message);
-                    Utils.openPage('/');
+
+                    if (status === 403) { // Not authorized
+                        Utils.openPage('/');
+                    }
+                });
+        }
+
+        $scope.createRoom = function () {
+
+            var postArgs = Utils.postArgs();
+            postArgs.name = $scope.roomName;
+
+            $http.post('/create-room', postArgs)
+                .success(function (data) {
+                    console.log(data.message);
+                    $scope.roomName = '';
+                    $scope.getRooms();
+                })
+                .error(function (data, status) {
+                    Utils.showToast(data.message);
+                    console.log(status + " " + data.message);
+
+                    if (status === 403) { // Not authorized
+                        Utils.openPage('/');
+                    }
                 });
         };
 

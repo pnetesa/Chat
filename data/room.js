@@ -23,7 +23,6 @@ function clear() {
 
             redisClient.srem(NAME, record);
         });
-        console.log('-- Cleared room data');
     });
 }
 

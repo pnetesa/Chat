@@ -13,13 +13,13 @@
 
         $scope.autoLogin = function () {
 
-            var config = Utils.getConfig();
+            var getArgs = Utils.getArgs();
 
-            if (!config) {
+            if (!getArgs) {
                 return;
             }
 
-            $http.get('/autologin.json', config)
+            $http.get('/autologin', getArgs)
                 .success(function (data) {
                     console.log(data.message);
                     Utils.openPage('/lobby');
@@ -32,13 +32,7 @@
 
         $scope.login = function () {
 
-            var config = {
-                params: {
-                    loginInfo: $scope.loginInfo
-                }
-            };
-
-            $http.get('/login.json', config)
+            $http.post('/login', $scope.loginInfo)
                 .success(function (data) {
                     console.log(data.message);
                     Utils.setUserInfo(data, $scope.loginInfo.rememberMe);

@@ -13,13 +13,11 @@
 
         $scope.register = function () {
 
-            var config = {
-                params: {
-                    userInfo: $scope.userInfo
-                }
+            var postArgs = {
+                userInfo: $scope.userInfo
             };
 
-            $http.get('/register.json', config)
+            $http.post('/register', postArgs)
                 .success(function (data) {
                     console.log(data.message);
                     Utils.setUserInfo(data);

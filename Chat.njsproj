@@ -3,16 +3,16 @@
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <Name>Chat</Name>
-    <RootNamespace>Chat</RootNamespace>
+    <Name>ExpressApp7</Name>
+    <RootNamespace>ExpressApp7</RootNamespace>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>0003fbdd-ba67-4b80-92ce-eb37ed462c84</ProjectGuid>
+    <ProjectGuid>83aac9f6-1094-40fc-8ce9-2ca0fe8ccbac</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>server.js</StartupFile>
+    <StartupFile>app.js</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -20,8 +20,8 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
     <ProjectView>ProjectFiles</ProjectView>
-    <NodejsPort>1337</NodejsPort>
-    <StartWebBrowser>true</StartWebBrowser>
+    <NodejsPort>1999</NodejsPort>
+    <StartWebBrowser>True</StartWebBrowser>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,28 +30,34 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="app.js" />
+    <Compile Include="config\index.js" />
+    <Compile Include="data\account.js" />
     <Compile Include="data\message.js" />
     <Compile Include="data\room.js" />
-    <Compile Include="data\account.js" />
-    <Compile Include="handlers\common.js" />
-    <Compile Include="handlers\login.js" />
-    <Compile Include="handlers\lobby.js" />
-    <Compile Include="handlers\register.js" />
-    <Compile Include="handlers\room.js" />
-    <Compile Include="handlers\routing.js" />
+    <Compile Include="middleware\authorize.js" />
+    <Compile Include="middleware\sendHttpError.js" />
     <Compile Include="public\js\app.js" />
-    <Compile Include="public\js\room.js" />
     <Compile Include="public\js\lobby.js" />
-    <Compile Include="public\js\register.js" />
     <Compile Include="public\js\login.js" />
+    <Compile Include="public\js\register.js" />
+    <Compile Include="public\js\room.js" />
     <Compile Include="public\js\utils.js" />
     <Compile Include="public\libs\angular-route.min.js" />
     <Compile Include="public\libs\angular.min.js" />
     <Compile Include="public\libs\bootstrap.min.js" />
-    <Compile Include="handlers\default.js" />
-    <Compile Include="public\libs\jquery.cookie.js" />
     <Compile Include="public\libs\jquery.min.js" />
-    <Compile Include="server.js" />
+    <Compile Include="routes\common.js" />
+    <Compile Include="routes\index.js" />
+    <Compile Include="routes\lobby.js" />
+    <Compile Include="routes\logout.js" />
+    <Compile Include="routes\login.js" />
+    <Compile Include="routes\register.js" />
+    <Compile Include="routes\chat.js" />
+    <Compile Include="routes\room.js" />
+    <Compile Include="utils\error.js" />
+    <Compile Include="utils\log.js" />
+    <Content Include="config\config.json" />
     <Content Include="package.json" />
     <Content Include="public\css\bootstrap.min.css" />
     <Content Include="public\css\main.css" />
@@ -60,22 +66,25 @@
     <Content Include="public\img\loading.gif" />
     <Content Include="public\img\ok.png" />
     <Content Include="public\img\upload.png" />
+    <Content Include="public\include\lobby.html" />
     <Content Include="public\include\logged-in.html" />
+    <Content Include="public\include\login.html" />
     <Content Include="public\include\register.html" />
     <Content Include="public\include\room.html" />
-    <Content Include="public\include\lobby.html" />
-    <Content Include="public\include\login.html" />
     <Content Include="public\index.html" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="handlers\" />
+    <Folder Include="config\" />
+    <Folder Include="middleware\" />
     <Folder Include="data\" />
+    <Folder Include="utils\" />
     <Folder Include="public\" />
     <Folder Include="public\css\" />
+    <Folder Include="public\img\" />
+    <Folder Include="public\include\" />
     <Folder Include="public\js\" />
     <Folder Include="public\libs\" />
-    <Folder Include="public\include\" />
-    <Folder Include="public\img\" />
+    <Folder Include="routes\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
   <ProjectExtensions>
