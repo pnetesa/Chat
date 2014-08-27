@@ -6,7 +6,7 @@
 
         var $toast;
 
-        this.isDev = true;
+        //this.isDev = true;
 
         this.showToast = function (text) {
 

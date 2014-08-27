@@ -4,7 +4,6 @@
 
     app.controller('RoomController', ['$scope', '$http', 'Utils', function ($scope, $http, Utils) {
 
-        $scope.messages = [];
         $scope.MAX_MESSAGES = 20;
         $scope.historyExpanded = false;
         $scope.inUpload = false;
@@ -21,6 +20,8 @@
                 Utils.openPage('/');
                 return;
             }
+
+            $scope.messages = [];
 
             $scope.server = io({ forceNew: true });
             $scope.server.on('connect', onServerConnect);
