@@ -70,7 +70,7 @@ schema.statics.authenticate = function (email, password, callback) {
 
     async.waterfall([
         function (callback) {
-            Account.findOne({ email: email }, callback);
+            Account.findOne({ email: email.toLowerCase() }, callback);
         },
         function (account, callback) {
             if (!account) {
@@ -100,7 +100,7 @@ schema.statics.authorize = function (email, token, callback) {
 
     async.waterfall([
         function (callback) {
-            Account.findOne({ email: email }, callback);
+            Account.findOne({ email: email.toLowerCase() }, callback);
         },
         function (account, callback) {
             if (!account) {
@@ -121,7 +121,7 @@ schema.statics.logout = function (email, token, callback) {
 
     async.waterfall([
         function (callback) {
-            Account.findOne({ email: email }, callback);
+            Account.findOne({ email: email.toLowerCase() }, callback);
         },
         function (account, callback) {
             if (!account) {

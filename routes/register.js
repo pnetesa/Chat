@@ -7,7 +7,7 @@ function post(req, res, next) {
 
     var account = new Account({
         username: userInfo.username,
-        email: userInfo.email,
+        email: userInfo.email.toLowerCase(),
         password: userInfo.password
     });
 
