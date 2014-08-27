@@ -1,6 +1,9 @@
-﻿var messageData = require('../data/message.js');
+﻿var getModel = require('../models/message').getModel;
+var async = require('async');
 var config = require('../config');
 var authorization = require('../middleware/authorize');
+var log = require('../utils/log');
+var MAX_MESSAGES = 20
 
 function init(server) {
     var io = require('socket.io').listen(server);
@@ -22,9 +25,9 @@ function clientConnected(client) {
         });
     });
 
-    client.on('uploaded-file', function (msg) {
+    client.on('uploaded-file', function (file) {
         authorizeClient(client, client.userInfo, function (account) {
-            uploadedFile(client, msg, account);
+            uploadedFile(client, file, account);
         });
     });
 
@@ -39,6 +42,7 @@ function authorizeClient(client, userInfo, success) {
 
     authorization.authorize(userInfo, function (err, account) {
         if (err) {
+            log.warning(err);
             client.emit('unauthorized');
             return;
         }
@@ -49,77 +53,131 @@ function authorizeClient(client, userInfo, success) {
 }
 
 function join(client, roomId, email, account) {
-    sendHistory(client, roomId);
+
     client.userInfo = {
         email: email,
         token: account.token
     };
     client.roomId = roomId
 
-    var msg = getSystemMsg(
-        account.username + ' has joined the chat',
-        account.color);
+    async.waterfall([
+        function (callback) {
+            sendHistory(client, roomId, callback);
+        },
+        function (callback) {
 
-    messageData.save(client.roomId, msg);
+            var message = getSystemMsg(
+                client.roomId,
+                account.username + ' has joined the chat',
+                account.color);
 
-    notifyOthers(client, msg);
+            message.save(function (err) {
+
+                if (err) {
+                    callback(err);
+                }
+
+                notifyOthers(client, message);
+                callback(null);
+            });
+        },
+    ], function (err) {
+        if (err) {
+            log.error(err);
+            return client.emit('error');
+        }
+    });
 }
 
-function sendHistory(client, roomId) {
-    messageData.get(roomId, function (err, result) {
+function sendHistory(client, roomId, callback) {
 
-        var rows = result.reverse();
-        rows.forEach(function (row) {
-            notifyMe(client, JSON.parse(row));
+    var Message = getModel(roomId);
+    Message.find({}, function (err, messages) {
+
+        if (err) {
+            callback(err);
+        }
+
+        messages.forEach(function (message) {
+            notifyMe(client, message);
         });
-
-    });
+        callback(null);
+    }).limit(MAX_MESSAGES);
 }
 
 function message(client, text, callback, account) {
 
-    var msg = {
+    var Message = getModel(client.roomId);
+    var message = new Message({
         username: account.username,
         color: account.color,
         text: text
-    };
+    });
 
-    messageData.save(client.roomId, msg);
+    message.save(function (err) {
 
-    notifyMe(client, msg);
-    notifyOthers(client, msg);
+        if (err) {
+            log.error(err);
+            return client.emit('error');
+        }
 
-    callback && callback();
+        notifyMe(client, message);
+        notifyOthers(client, message);
+
+        callback && callback();
+    });
 }
 
-function uploadedFile(client, msg, account) {
+function uploadedFile(client, file, account) {
 
-    msg.isFile = true;
-    msg.username = account.username;
-    msg.color = account.color;
+    var Message = getModel(client.roomId);
+    var message = new Message({
+        username: account.username,
+        color: account.color,
+        isFile: true,
+        filename: file.filename,
+        filepath: file.filepath
+    });
 
-    messageData.save(client.roomId, msg);
+    message.save(function (err) {
 
-    notifyMe(client, msg);
-    notifyOthers(client, msg);
+        if (err) {
+            log.error(err);
+            return client.emit('error');
+        }
+
+        notifyMe(client, message);
+        notifyOthers(client, message);
+    });
 }
 
 function disconnect(client, account) {
-    var msg = getSystemMsg(
+
+    var message = getSystemMsg(
+        client.roomId,
         account.username + ' has left',
         account.color);
 
-    messageData.save(client.roomId, msg);
-    notifyOthers(client, msg);
+    message.save(function (err) {
+
+        if (err) {
+            log.error(err);
+            return client.emit('error');
+        }
+
+        notifyOthers(client, message);
+    });
 }
 
-function getSystemMsg(text, color) {
-    return {
+function getSystemMsg(roomId, text, color) {
+
+    var Message = getModel(roomId);
+    return new Message({
         isSystem: true,
         username: '',
-        color: color || '#000000',
+        color: color,
         text: text
-    };
+    });
 }
 
 function notifyMe(client, message) {

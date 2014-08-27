@@ -52,6 +52,10 @@
                 .error(function (data, status) {
                     Utils.showToast(data.message);
                     console.log(status + " " + data.message);
+
+                    if (status === 403) { // Not authorized
+                        Utils.openPage('/');
+                    }
                 });
         };
 

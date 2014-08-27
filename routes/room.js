@@ -2,27 +2,21 @@
 var formidable = require('formidable');
 var path = require('path');
 var config = require('../config');
-var messageData = require('../data/message.js');
+var getModel = require('../models/message').getModel;
 var authorization = require('../middleware/authorize');
 var async = require('async');
+var log = require('../utils/log');
 
 function get(req, res, next) {
 
-    var roomId = req.query.roomId;
-    messageData.getAll(roomId, function (err, records) {
+    var Message = getModel(req.query.roomId);
+    Message.find({}, function (err, messages) {
 
         if (err) {
             return next(err);
         }
 
-        var messages = [];
-
-        records.forEach(function (record) {
-            var message = JSON.parse(record);
-            messages.push(message);
-        });
-
-        res.json(messages);
+        res.json(messages.reverse());
     });
 };
 
@@ -91,6 +85,8 @@ function saveFile(uploadDir, upload, callback) {
                     }
                 });
             }
+
+            log.info('Uploaded file: ' + file);
 
             callback(null, {
                 filename: upload.name,

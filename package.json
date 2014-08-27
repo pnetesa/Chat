@@ -1,6 +1,6 @@
 {
   "name": "Chat",
-  "version": "1.5.0",
+  "version": "1.7.0",
   "description": "Chat",
   "main": "app.js",
   "author": {
@@ -11,8 +11,8 @@
     "async": "^0.9.0",
     "express": "3.4.4",
     "formidable": "^1.0.15",
+    "mongoose": "^3.8.15",
     "nconf": "^0.6.9",
-    "redis": "^0.12.1",
     "socket.io": "^1.0.6",
     "winston": "^0.7.3"
   }
