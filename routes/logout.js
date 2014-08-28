@@ -1,24 +1,16 @@
-﻿var accountData = require('../data/account.js');
+﻿var Account = require('../models/account').Account;
 
 function post(req, res, next) {
 
     var userInfo = req.body.userInfo;
-    accountData.get(userInfo.email, function (err, data) {
+
+    Account.logout(userInfo.email, userInfo.token, function (err, account) {
 
         if (err) {
             return next(err);
         }
 
-        var account = JSON.parse(data);
-        account.token = '';
-        accountData.save(userInfo.email, account, function (err, result) {
-            
-            if (err) {
-                return next(err);
-            }
-
-            res.json({ message: 'User \'' + userInfo.email + '\' logged out' });
-        });
+        res.json({ message: 'User \'' + account.email + '\' logged out' });
     });
 };
 

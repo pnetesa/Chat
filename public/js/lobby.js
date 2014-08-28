@@ -1,5 +1,4 @@
 ﻿(function () {
-
     var app = angular.module('lobby', ['utils']);
 
     app.controller('LobbyController', ['$scope', '$http', 'Utils', function ($scope, $http, Utils) {

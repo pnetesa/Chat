@@ -1,5 +1,4 @@
-﻿var accountData = require('../data/account');
-var HttpError = require('../utils/error').HttpError;
+﻿var Account = require('../models/account').Account;
 
 function get(req, res, next) {
     var userInfo = JSON.parse(req.query.userInfo);
@@ -18,18 +17,13 @@ function authorize(userInfo, next) {
         return;
     }
 
-    accountData.get(userInfo.email, function (err, data) {
+    Account.authorize(userInfo.email, userInfo.token, function (err, account) {
 
-        if (!data) {
-            next(new HttpError(403, "Invalid e-mail"));
-        } else {
-            var account = JSON.parse(data);
-            if (userInfo.token === account.token) {
-                next(null, account);
-            } else {
-                next(new HttpError(403, "Invalid token"));
-            }
+        if (err) {
+            return next(err);
         }
+
+        next(null, account);
     });
 }
 

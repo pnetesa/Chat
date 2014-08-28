@@ -32,11 +32,11 @@
   <ItemGroup>
     <Compile Include="app.js" />
     <Compile Include="config\index.js" />
-    <Compile Include="data\account.js" />
-    <Compile Include="data\message.js" />
-    <Compile Include="data\room.js" />
     <Compile Include="middleware\authorize.js" />
     <Compile Include="middleware\sendHttpError.js" />
+    <Compile Include="models\message.js" />
+    <Compile Include="models\room.js" />
+    <Compile Include="models\account.js" />
     <Compile Include="public\js\app.js" />
     <Compile Include="public\js\lobby.js" />
     <Compile Include="public\js\login.js" />
@@ -47,7 +47,6 @@
     <Compile Include="public\libs\angular.min.js" />
     <Compile Include="public\libs\bootstrap.min.js" />
     <Compile Include="public\libs\jquery.min.js" />
-    <Compile Include="routes\common.js" />
     <Compile Include="routes\index.js" />
     <Compile Include="routes\lobby.js" />
     <Compile Include="routes\logout.js" />
@@ -55,6 +54,8 @@
     <Compile Include="routes\register.js" />
     <Compile Include="routes\chat.js" />
     <Compile Include="routes\room.js" />
+    <Compile Include="utils\common.js" />
+    <Compile Include="utils\database.js" />
     <Compile Include="utils\error.js" />
     <Compile Include="utils\log.js" />
     <Content Include="config\config.json" />
@@ -76,7 +77,7 @@
   <ItemGroup>
     <Folder Include="config\" />
     <Folder Include="middleware\" />
-    <Folder Include="data\" />
+    <Folder Include="models\" />
     <Folder Include="utils\" />
     <Folder Include="public\" />
     <Folder Include="public\css\" />

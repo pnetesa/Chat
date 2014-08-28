@@ -1,46 +1,29 @@
-﻿var common = require('./common.js');
-var roomData = require('../data/room.js');
-var config = require('../config');
-var log = require('../utils/log');
+﻿var Room = require('../models/room').Room;
 var HttpError = require('../utils/error').HttpError;
 
 function get(req, res, next) {
+    Room.find({}, function (err, rooms) {
 
-    roomData.getAll(function (err, records) {
-
-        var rooms = [];
-
-        records.forEach(function (record) {
-            var room = JSON.parse(record);
-            rooms.push(room);
-        });
+        if (err) {
+            return next(err);
+        }
 
         res.json(rooms);
     });
-
 };
 
 function post(req, res, next) {
 
-    var room = {
-        id: 'r' + common.hashCode(req.body.name),
+    var room = new Room({
         name: req.body.name
-    }
+    });
+    room.roomId = 'r' + room._id.valueOf();
 
-    roomData.save(room, function (err, result) {
+    room.save(function (err) {
 
         if (err) {
-            return next(err);
-        } else if (result === 0) {
-
-            if (config.get('isDev')) {
-                roomData.clear();
-                log.info('Cleared room data. All rooms and messages deleted');
-            }
-
-            return next(
-                new HttpError(401,
-                    'Room \'' + room.name + '\' already exists. Try another name.'));
+            return next(new HttpError(401,
+                    'Room \'' + room.name + '\' already exists. Try another name'));
         }
 
         res.json({ message: 'Created room \'' + room.name + '\'.' });

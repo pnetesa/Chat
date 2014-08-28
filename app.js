@@ -10,7 +10,6 @@ var publicDir = path.join(__dirname, 'public');
 
 // all environments
 app.set('port', process.env.PORT || config.get('port'));
-app.set('env', config.get('isDev') ? 'development' : 'release')
 app.set('uploadDir', path.join(publicDir, config.get('uploadDir')));
 
 app.use(express.favicon(path.join(publicDir, 'favicon.ico')));
@@ -38,15 +37,11 @@ app.use(function (err, req, res, next) {
 
     if (err instanceof HttpError) { // next(new HttpError(...));
         return res.sendHttpError(err);
+    } else if (err.message) {
+        err = new HttpError(400, err.message);
     }
 
-    if (config.get('isDev')) {
-        var errorHandler = app.use(express.errorHandler());
-        errorHandler(err, req, res, next);
-    } else {
-        err = new HttpError(500);
-        res.sendHttpError(err);
-    }
+    res.sendHttpError(err);
 });
 
 var server = http.createServer(app);

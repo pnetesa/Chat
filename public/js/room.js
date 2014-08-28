@@ -27,6 +27,7 @@
             $scope.server.on('connect', onServerConnect);
             $scope.server.on('message', onServerMessage);
             $scope.server.on('unauthorized', onUnauthorized);
+            $scope.server.on('error', onError);
         };
 
         $scope.getStyle = function (message) {
@@ -43,13 +44,14 @@
         $scope.showHistory = function () {
 
             var getArgs = Utils.getArgs();
-            getArgs.params.roomId = $scope.room.id;
+            getArgs.params.roomId = $scope.room.roomId;
 
             $http.get('/get-history', getArgs)
                 .success(function (data) {
                     console.log(data);
                     $scope.messages = data;
                     $scope.historyExpanded = true;
+                    $scope.$apply();
                 })
                 .error(function (data, status) {
                     Utils.showToast(data.message);
@@ -66,6 +68,7 @@
 
             $scope.server.emit('message', $scope.message, function () {
                 $scope.message = '';
+                $scope.$apply();
             });
         };
 
@@ -95,12 +98,10 @@
 
                 $scope.file = undefined;
 
-                var message = {
+                $scope.server.emit('uploaded-file', {
                     filename: data.filename,
                     filepath: data.filepath
-                };
-
-                $scope.server.emit('uploaded-file', message);
+                });
             })
             .error(function (data, status) {
                 Utils.showToast(data.message);
@@ -109,12 +110,12 @@
         };
 
         var onServerConnect = function () {
-            $scope.server.emit('join', $scope.room.id, Utils.getUserInfo());
+            $scope.server.emit('join', $scope.room.roomId, Utils.getUserInfo());
         };
 
         var onServerMessage = function (roomId, message) {
 
-            if ($scope.room.id !== roomId) {
+            if ($scope.room.roomId !== roomId) {
                 return;
             }
 
@@ -126,6 +127,10 @@
 
         var onUnauthorized = function () {
             Utils.openPage('/');
+        };
+
+        var onError = function () {
+            Utils.showToast('Server error');
         };
 
         var getFormDataObject = function (data, headersGetter) {
