@@ -1,4 +1,5 @@
 ﻿var Account = require('../models/account').Account;
+var HttpError = require('../utils/error').HttpError;
 
 function get(req, res, next) {
     var userInfo = JSON.parse(req.query.userInfo);

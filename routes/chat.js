@@ -42,7 +42,7 @@ function authorizeClient(client, userInfo, success) {
 
     authorization.authorize(userInfo, function (err, account) {
         if (err) {
-            log.warning(err);
+            log.warn(err);
             client.emit('unauthorized');
             return;
         }
